@@ -1837,6 +1837,9 @@ documentation for the major and minor modes of that buffer."
     (mapatoms
      (lambda (sym)
        (when (and (commandp sym)
+                  ;; Ignore aliases.
+                  (not (symbolp (symbol-function sym)))
+                  ;; Ignore everything bound.
                   (not (where-is-internal sym))
                   (apply #'derived-mode-p (command-modes sym)))
          (push sym functions))))
