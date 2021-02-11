@@ -1910,61 +1910,66 @@ to get different commands to edit and resubmit."
 
 (defun read-extended-command ()
   "Read command name to invoke in `execute-extended-command'."
-  (minibuffer-with-setup-hook
-      (lambda ()
-        (add-hook 'post-self-insert-hook
-                  (lambda ()
-                    (setq execute-extended-command--last-typed
-                              (minibuffer-contents)))
-                  nil 'local)
-        (setq-local minibuffer-default-add-function
-	     (lambda ()
-	       ;; Get a command name at point in the original buffer
-	       ;; to propose it after M-n.
-	       (let ((def (with-current-buffer
-			      (window-buffer (minibuffer-selected-window))
-			    (and (commandp (function-called-at-point))
-				 (format "%S" (function-called-at-point)))))
-		     (all (sort (minibuffer-default-add-completions)
-                                #'string<)))
-		 (if def
-		     (cons def (delete def all))
-		   all)))))
-    ;; Read a string, completing from and restricting to the set of
-    ;; all defined commands.  Don't provide any initial input.
-    ;; Save the command read on the extended-command history list.
-    (completing-read
-     (concat (cond
-	      ((eq current-prefix-arg '-) "- ")
-	      ((and (consp current-prefix-arg)
-		    (eq (car current-prefix-arg) 4)) "C-u ")
-	      ((and (consp current-prefix-arg)
-		    (integerp (car current-prefix-arg)))
-	       (format "%d " (car current-prefix-arg)))
-	      ((integerp current-prefix-arg)
-	       (format "%d " current-prefix-arg)))
-	     ;; This isn't strictly correct if `execute-extended-command'
-	     ;; is bound to anything else (e.g. [menu]).
-	     ;; It could use (key-description (this-single-command-keys)),
-	     ;; but actually a prompt other than "M-x" would be confusing,
-	     ;; because "M-x" is a well-known prompt to read a command
-	     ;; and it serves as a shorthand for "Extended command: ".
-	     "M-x ")
-     (lambda (string pred action)
-       (if (and suggest-key-bindings (eq action 'metadata))
-	   '(metadata
-	     (affixation-function . read-extended-command--affixation)
-	     (category . command))
-         (complete-with-action action obarray string pred)))
-     read-extended-command-predicate t nil 'extended-command-history)))
+  (let ((current-major-mode major-mode))
+    (minibuffer-with-setup-hook
+        (lambda ()
+          (add-hook 'post-self-insert-hook
+                    (lambda ()
+                      (setq execute-extended-command--last-typed
+                            (minibuffer-contents)))
+                    nil 'local)
+          (setq-local minibuffer-default-add-function
+	              (lambda ()
+	                ;; Get a command name at point in the original buffer
+	                ;; to propose it after M-n.
+	                (let ((def
+                               (with-current-buffer
+			           (window-buffer (minibuffer-selected-window))
+			         (and (commandp (function-called-at-point))
+				      (format
+                                       "%S" (function-called-at-point)))))
+		              (all (sort (minibuffer-default-add-completions)
+                                         #'string<)))
+		          (if def
+		              (cons def (delete def all))
+		            all)))))
+      ;; Read a string, completing from and restricting to the set of
+      ;; all defined commands.  Don't provide any initial input.
+      ;; Save the command read on the extended-command history list.
+      (completing-read
+       (concat (cond
+	        ((eq current-prefix-arg '-) "- ")
+	        ((and (consp current-prefix-arg)
+		      (eq (car current-prefix-arg) 4)) "C-u ")
+	        ((and (consp current-prefix-arg)
+		      (integerp (car current-prefix-arg)))
+	         (format "%d " (car current-prefix-arg)))
+	        ((integerp current-prefix-arg)
+	         (format "%d " current-prefix-arg)))
+	       ;; This isn't strictly correct if `execute-extended-command'
+	       ;; is bound to anything else (e.g. [menu]).
+	       ;; It could use (key-description (this-single-command-keys)),
+	       ;; but actually a prompt other than "M-x" would be confusing,
+	       ;; because "M-x" is a well-known prompt to read a command
+	       ;; and it serves as a shorthand for "Extended command: ".
+	       "M-x ")
+       (lambda (string pred action)
+         (if (and suggest-key-bindings (eq action 'metadata))
+	     '(metadata
+	       (affixation-function . read-extended-command--affixation)
+	       (category . command))
+           (complete-with-action action obarray string pred)))
+       (lambda (sym)
+         (command-for-mode-p current-major-mode sym))
+       t nil 'extended-command-history))))
 
-(defun command-for-mode-p (symbol)
+(defun command-for-mode-p (mode symbol)
   "Say whether SYMBOL should be offered as a completion.
 This is true if it's a command and the command is applicable to
 the current major mode."
   (and (commandp symbol)
        (or (null (command-modes symbol))
-           (apply #'derived-mode-p (command-modes symbol)))))
+           (apply #'provided-mode-derived-p mode (command-modes symbol)))))
 
 (defun read-extended-command--affixation (command-names)
   (with-selected-window (or (minibuffer-selected-window) (selected-window))
