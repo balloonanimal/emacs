@@ -904,7 +904,13 @@ Value, if non-nil, is a list (interactive SPEC).  */)
   else if (COMPILEDP (fun))
     {
       if (PVSIZE (fun) > COMPILED_INTERACTIVE)
-	return list2 (Qinteractive, Fcar (AREF (fun, COMPILED_INTERACTIVE)));
+	{
+	  Lisp_Object form = AREF (fun, COMPILED_INTERACTIVE);
+	  if (VECTORP (form))
+	    return list2 (Qinteractive, AREF (form, 0));
+	  else
+	    return list2 (Qinteractive, form);
+	}
     }
 #ifdef HAVE_MODULES
   else if (MODULE_FUNCTIONP (fun))
@@ -958,8 +964,11 @@ The value, if non-nil, is a list of mode name symbols.  */)
     }
   else if (COMPILEDP (fun))
     {
-      if (PVSIZE (fun) > COMPILED_INTERACTIVE)
-	return Fcdr (AREF (fun, COMPILED_INTERACTIVE));
+      Lisp_Object form = AREF (fun, COMPILED_INTERACTIVE);
+      if (VECTORP (form))
+	return AREF (form, 1);
+      else
+	return Qnil;
     }
 #ifdef HAVE_MODULES
   else if (MODULE_FUNCTIONP (fun))
