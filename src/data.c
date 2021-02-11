@@ -986,7 +986,7 @@ The value, if non-nil, is a list of mode name symbols.  */)
     }
 #endif
   else if (AUTOLOADP (fun))
-    return Fcommand_modes (Fautoload_do_load (fun, command, Qnil));
+    return Qnil;
   else if (CONSP (fun))
     {
       Lisp_Object funcar = XCAR (fun);
