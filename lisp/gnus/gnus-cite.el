@@ -335,7 +335,7 @@ lines matches `message-cite-prefix-regexp' with the same prefix.
 
 Lines matching `gnus-cite-attribution-suffix' and perhaps
 `gnus-cite-attribution-prefix' are considered attribution lines."
-  (interactive (list 'force))
+  (command (gnus-article-mode gnus-summary-mode) (list 'force))
   (with-current-buffer (if same-buffer (current-buffer) gnus-article-buffer)
     (gnus-cite-parse-maybe force)
     (let ((buffer-read-only nil)
@@ -459,7 +459,7 @@ frame width.
 
 Sections that are heuristically interpreted as not being
 text (i.e., computer code and the like) will not be folded."
-  (interactive "P")
+  (command (gnus-article-mode gnus-summary-mode) "P")
   (with-current-buffer gnus-article-buffer
     (let ((buffer-read-only nil)
 	  (inhibit-point-motion-hooks t)
@@ -529,7 +529,8 @@ text (i.e., computer code and the like) will not be folded."
 See the documentation for `gnus-article-highlight-citation'.
 If given a negative prefix, always show; if given a positive prefix,
 always hide."
-  (interactive (append (gnus-article-hidden-arg) (list 'force)))
+  (command (gnus-article-mode gnus-summary-mode)
+	   (append (gnus-article-hidden-arg) (list 'force)))
   (gnus-set-format 'cited-opened-text-button t)
   (gnus-set-format 'cited-closed-text-button t)
   (with-current-buffer gnus-article-buffer
@@ -661,7 +662,7 @@ percent and at least `gnus-cite-hide-absolute' lines of the body is
 cited text with attributions.  When called interactively, these two
 variables are ignored.
 See also the documentation for `gnus-article-highlight-citation'."
-  (interactive (append (gnus-article-hidden-arg) '(force)))
+  (command (gnus-article-mode gnus-summary-mode) (append (gnus-article-hidden-arg) '(force)))
   (with-current-buffer gnus-article-buffer
     (gnus-delete-wash-type 'cite)
     (unless (gnus-article-check-hidden-text 'cite arg)
@@ -689,7 +690,7 @@ See also the documentation for `gnus-article-highlight-citation'."
 
 (defun gnus-article-hide-citation-in-followups ()
   "Hide cited text in non-root articles."
-  (interactive)
+  (command (gnus-article-mode gnus-summary-mode))
   (with-current-buffer gnus-article-buffer
     (let ((article (cdr gnus-article-current)))
       (unless (with-current-buffer gnus-summary-buffer

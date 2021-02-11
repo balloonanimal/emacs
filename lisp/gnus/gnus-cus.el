@@ -337,7 +337,7 @@ category."))
 
 (defun gnus-group-customize (group &optional topic)
   "Edit the group or topic on the current line."
-  (interactive (list (gnus-group-group-name) (gnus-group-topic-name)))
+  (command gnus-group-mode (list (gnus-group-group-name) (gnus-group-topic-name)))
   (let (info
 	(types (mapcar (lambda (entry)
 			 `(cons :format "%v%h\n"
@@ -485,7 +485,7 @@ form, but who cares?"
 
 (defun gnus-group-customize-done (&rest _ignore)
   "Apply changes and bury the buffer."
-  (interactive)
+  (command gnus-custom-mode)
   (let ((params (widget-value gnus-custom-params)))
     (if gnus-custom-topic
 	(gnus-topic-set-parameters gnus-custom-topic params)
@@ -829,7 +829,7 @@ eh?")))
   "Customize score file FILE.
 When called interactively, FILE defaults to the current score file.
 This can be changed using the `\\[gnus-score-change-score-file]' command."
-  (interactive (list gnus-current-score-file))
+  (command gnus-summary-mode (list gnus-current-score-file))
   (unless file
     (error "No score file for %s" gnus-newsgroup-name))
   (let ((scores (gnus-score-load file))
@@ -1000,7 +1000,7 @@ articles in the thread.
 
 (defun gnus-agent-customize-category (category)
   "Edit the CATEGORY."
-  (interactive (list (gnus-category-name)))
+  (command gnus-custom-mode (list (gnus-category-name)))
   (let ((info (assq category gnus-category-alist))
         (defaults (list nil '(agent-predicate . false)
                         (cons 'agent-enable-expiration
