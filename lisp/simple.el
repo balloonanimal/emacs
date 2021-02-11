@@ -1948,7 +1948,15 @@ to get different commands to edit and resubmit."
 	     (affixation-function . read-extended-command--affixation)
 	     (category . command))
          (complete-with-action action obarray string pred)))
-     #'commandp t nil 'extended-command-history)))
+     #'command-for-mode-p t nil 'extended-command-history)))
+
+(defun command-for-mode-p (symbol)
+  "Say whether SYMBOL should be offered as a completion.
+This is true if it's a command and the command is applicable to
+the current major mode."
+  (and (commandp symbol)
+       (or (null (command-modes symbol))
+           (apply #'derived-mode-p (command-modes symbol)))))
 
 (defun read-extended-command--affixation (command-names)
   (with-selected-window (or (minibuffer-selected-window) (selected-window))

@@ -2211,6 +2211,9 @@ into `edebug--cl-macrolet-defs' which is checked in `edebug-list-form-args'."
 (def-edebug-spec interactive
   (&optional &or stringp def-form))
 
+(def-edebug-spec command
+  (symbolp [&optional &or stringp def-form]))
+
 ;; A function-form is for an argument that may be a function or a form.
 ;; This specially recognizes anonymous functions quoted with quote.
 (def-edebug-spec function-form

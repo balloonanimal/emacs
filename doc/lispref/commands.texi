@@ -116,6 +116,12 @@ serves as a flag, telling the Emacs command loop that the function can
 be called interactively.  The argument of the @code{interactive} form
 specifies how the arguments for an interactive call should be read.
 
+  Many commands are specific to certain major modes and do not make
+sense outside of that context.  These commands can be marked with
+@code{command} instead of @code{interactive}, and take an additional
+parameter that specifies the mode (or modes) the command is applicable
+for.
+
 @cindex @code{interactive-form} property
   Alternatively, an @code{interactive} form may be specified in a
 function symbol's @code{interactive-form} property.  A non-@code{nil}
@@ -184,6 +190,18 @@ property and the function body, the former takes precedence.  The
 @code{interactive-form} symbol property can be used to add an
 interactive form to an existing function, or change how its arguments
 are processed interactively, without redefining the function.
+@end defspec
+
+@defspec command modes &optional arg-descriptor
+The @code{command} special form is identical to @code{interactive} in
+its effect, but allows specifying which modes the command is meant to
+be used in.  This affects, for instance, completion in @kbd{M-x}
+(commands won't be offered as completions if they don't match (using
+@code{derived-mode-p}) the current major mode), and will make
+@kbd{C-h m} list these commands.
+
+@var{modes} can be either a single symbol (a mode name), or a list of
+symbols (several mode names).
 @end defspec
 
 There are three possibilities for the argument @var{arg-descriptor}:
