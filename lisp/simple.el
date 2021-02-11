@@ -1900,6 +1900,14 @@ to get different commands to edit and resubmit."
 (defvar extended-command-history nil)
 (defvar execute-extended-command--last-typed nil)
 
+(defcustom read-extended-command-predicate #'command-for-mode-p
+  "Predicate to use to determine which commands to include when completing."
+  :version "28.1"
+  :type '(choice (const :tag "Exclude commands not relevant to this mode"
+                        #'command-for-mode-p)
+                 (const :tag "All commands" #'commandp)
+                 (function :tag "Other function")))
+
 (defun read-extended-command ()
   "Read command name to invoke in `execute-extended-command'."
   (minibuffer-with-setup-hook
@@ -1948,7 +1956,7 @@ to get different commands to edit and resubmit."
 	     (affixation-function . read-extended-command--affixation)
 	     (category . command))
          (complete-with-action action obarray string pred)))
-     #'command-for-mode-p t nil 'extended-command-history)))
+     read-extended-command-predicate t nil 'extended-command-history)))
 
 (defun command-for-mode-p (symbol)
   "Say whether SYMBOL should be offered as a completion.
