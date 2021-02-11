@@ -907,8 +907,12 @@ Value, if non-nil, is a list (interactive SPEC).  */)
 	{
 	  Lisp_Object form = AREF (fun, COMPILED_INTERACTIVE);
 	  if (VECTORP (form))
+	    /* The vector form is the new form, where the first
+	       element is the interactive spec, and the second is the
+	       command modes. */
 	    return list2 (Qinteractive, AREF (form, 0));
 	  else
+	    /* Old form -- just the interactive spec. */
 	    return list2 (Qinteractive, form);
 	}
     }
@@ -966,8 +970,10 @@ The value, if non-nil, is a list of mode name symbols.  */)
     {
       Lisp_Object form = AREF (fun, COMPILED_INTERACTIVE);
       if (VECTORP (form))
+	/* New form -- the second element is the command modes. */
 	return AREF (form, 1);
       else
+	/* Old .elc file -- no command modes. */
 	return Qnil;
     }
 #ifdef HAVE_MODULES
