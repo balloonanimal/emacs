@@ -145,7 +145,8 @@ See Info node `(gnus)Formatting Variables'."
 
 (defun gnus-topic-jump-to-topic (topic)
   "Go to TOPIC."
-  (interactive
+  (command
+   gnus-group-mode
    (list (gnus-completing-read "Go to topic" (gnus-topic-list) t)))
   (let ((inhibit-read-only t))
     (dolist (topic (gnus-current-topics topic))
@@ -235,12 +236,12 @@ If RECURSIVE is t, return groups in its subtopics too."
 
 (defun gnus-topic-goto-previous-topic (n)
   "Go to the N'th previous topic."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-topic-goto-next-topic (- n)))
 
 (defun gnus-topic-goto-next-topic (n)
   "Go to the N'th next topic."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (let ((backward (< n 0))
 	(n (abs n))
 	(topic (gnus-current-topic)))
@@ -1172,7 +1173,7 @@ articles in the group.  If ALL is a negative number, fetch this
 number of the earliest articles in the group.
 
 If performed over a topic line, toggle folding the topic."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (and (eobp) (not (gnus-group-group-name)))
     (forward-line -1))
   (if (gnus-group-topic-p)
@@ -1184,13 +1185,13 @@ If performed over a topic line, toggle folding the topic."
 
 (defun gnus-mouse-pick-topic (e)
   "Select the group or topic under the mouse pointer."
-  (interactive "e")
+  (command gnus-group-mode "e")
   (mouse-set-point e)
   (gnus-topic-read-group nil))
 
 (defun gnus-topic-expire-articles (topic)
   "Expire articles in this topic or group."
-  (interactive (list (gnus-group-topic-name)))
+  (command gnus-group-mode (list (gnus-group-topic-name)))
   (if (not topic)
       (call-interactively 'gnus-group-expire-articles)
     (save-excursion
@@ -1205,7 +1206,7 @@ If performed over a topic line, toggle folding the topic."
 (defun gnus-topic-catchup-articles (topic)
   "Catchup this topic or group.
 Also see `gnus-group-catchup'."
-  (interactive (list (gnus-group-topic-name)))
+  (command gnus-group-mode (list (gnus-group-topic-name)))
   (if (not topic)
       (call-interactively 'gnus-group-catchup-current)
     (save-excursion
@@ -1232,7 +1233,7 @@ be auto-selected upon group entry.  If GROUP is non-nil, fetch
 that group.
 
 If performed over a topic line, toggle folding the topic."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (and (eobp) (not (gnus-group-group-name)))
     (forward-line -1))
   (if (gnus-group-topic-p)
@@ -1244,7 +1245,8 @@ If performed over a topic line, toggle folding the topic."
 (defun gnus-topic-create-topic (topic parent &optional previous full-topic)
   "Create a new TOPIC under PARENT.
 When used interactively, PARENT will be the topic under point."
-  (interactive
+  (command
+   gnus-group-mode
    (list
     (read-string "New topic: ")
     (gnus-current-topic)))
@@ -1281,7 +1283,8 @@ When used interactively, PARENT will be the topic under point."
 (defun gnus-topic-move-group (n topic &optional copyp)
   "Move the next N groups to TOPIC.
 If COPYP, copy the groups instead."
-  (interactive
+  (command
+   gnus-group-mode
    (list current-prefix-arg
 	 (gnus-completing-read "Move to topic" (mapcar #'car gnus-topic-alist) t
 			       nil 'gnus-topic-history)))
@@ -1309,7 +1312,7 @@ If COPYP, copy the groups instead."
 
 (defun gnus-topic-remove-group (&optional n)
   "Remove the current group from the topic."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((use-marked (and (not n) (not (and transient-mark-mode mark-active))
 			 gnus-group-marked t))
 	(groups (gnus-group-process-prefix n)))
@@ -1328,7 +1331,8 @@ If COPYP, copy the groups instead."
 
 (defun gnus-topic-copy-group (n topic)
   "Copy the current group to a topic."
-  (interactive
+  (command
+   gnus-group-mode
    (list current-prefix-arg
 	 (gnus-completing-read
 	  "Copy to topic" (mapcar #'car gnus-topic-alist) t)))
@@ -1336,7 +1340,7 @@ If COPYP, copy the groups instead."
 
 (defun gnus-topic-kill-group (&optional n discard)
   "Kill the next N groups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (if (gnus-group-topic-p)
       (let ((topic (gnus-group-topic-name)))
 	(push (cons
@@ -1356,7 +1360,7 @@ If COPYP, copy the groups instead."
 
 (defun gnus-topic-yank-group (&optional arg)
   "Yank the last topic."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (if gnus-topic-killed-topics
       (let* ((previous
 	      (or (gnus-group-topic-name)
@@ -1405,7 +1409,7 @@ If COPYP, copy the groups instead."
 (defun gnus-topic-hide-topic (&optional permanent)
   "Hide the current topic.
 If PERMANENT, make it stay hidden in subsequent sessions as well."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (gnus-current-topic)
     (gnus-topic-goto-topic (gnus-current-topic))
     (if permanent
@@ -1418,7 +1422,7 @@ If PERMANENT, make it stay hidden in subsequent sessions as well."
 (defun gnus-topic-show-topic (&optional permanent)
   "Show the hidden topic.
 If PERMANENT, make it stay shown in subsequent sessions as well."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (gnus-group-topic-p)
     (if (not permanent)
 	(gnus-topic-remove-topic t nil)
@@ -1433,9 +1437,11 @@ If PERMANENT, make it stay shown in subsequent sessions as well."
 (defun gnus-topic-mark-topic (topic &optional unmark non-recursive)
   "Mark all groups in the TOPIC with the process mark.
 If NON-RECURSIVE (which is the prefix) is t, don't mark its subtopics."
-  (interactive (list (gnus-group-topic-name)
-		     nil
-		     (and current-prefix-arg t)))
+  (command
+   gnus-group-mode
+   (list (gnus-group-topic-name)
+	 nil
+	 (and current-prefix-arg t)))
   (if (not topic)
       (call-interactively 'gnus-group-mark-group)
     (save-excursion
@@ -1448,16 +1454,17 @@ If NON-RECURSIVE (which is the prefix) is t, don't mark its subtopics."
 (defun gnus-topic-unmark-topic (topic &optional _dummy non-recursive)
   "Remove the process mark from all groups in the TOPIC.
 If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
-  (interactive (list (gnus-group-topic-name)
-		     nil
-		     (and current-prefix-arg t)))
+  (command gnus-group-mode
+	   (list (gnus-group-topic-name)
+		 nil
+		 (and current-prefix-arg t)))
   (if (not topic)
       (call-interactively 'gnus-group-unmark-group)
     (gnus-topic-mark-topic topic t non-recursive)))
 
 (defun gnus-topic-get-new-news-this-topic (&optional n)
   "Check for new news in the current topic."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (if (not (gnus-group-topic-p))
       (gnus-group-get-new-news-this-group n)
     (let* ((topic (gnus-group-topic-name))
@@ -1469,7 +1476,8 @@ If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
 
 (defun gnus-topic-move-matching (regexp topic &optional copyp)
   "Move all groups that match REGEXP to some topic."
-  (interactive
+  (command
+   gnus-group-mode
    (let (topic)
      (nreverse
       (list
@@ -1481,7 +1489,8 @@ If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
 
 (defun gnus-topic-copy-matching (regexp topic &optional _copyp)
   "Copy all groups that match REGEXP to some topic."
-  (interactive
+  (command
+   gnus-group-mode
    (let ((topic (gnus-completing-read "Copy to topic"
                                       (mapcar #'car gnus-topic-alist) t)))
      (nreverse
@@ -1491,7 +1500,7 @@ If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
 
 (defun gnus-topic-delete (topic)
   "Delete a topic."
-  (interactive (list (gnus-group-topic-name)))
+  (command gnus-group-mode (list (gnus-group-topic-name)))
   (unless topic
     (error "No topic to be deleted"))
   (let ((entry (assoc topic gnus-topic-alist))
@@ -1509,7 +1518,8 @@ If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
 
 (defun gnus-topic-rename (old-name new-name)
   "Rename a topic."
-  (interactive
+  (command
+   gnus-group-mode
    (let ((topic (gnus-current-topic)))
      (list topic
 	   (read-string (format "Rename %s to: " topic) topic))))
@@ -1535,7 +1545,7 @@ If NON-RECURSIVE (which is the prefix) is t, don't unmark its subtopics."
 (defun gnus-topic-indent (&optional unindent)
   "Indent a topic -- make it a sub-topic of the previous topic.
 If UNINDENT, remove an indentation."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (if unindent
       (gnus-topic-unindent)
     (let* ((topic (gnus-current-topic))
@@ -1555,7 +1565,7 @@ If UNINDENT, remove an indentation."
 
 (defun gnus-topic-unindent ()
   "Unindent a topic."
-  (interactive)
+  (command gnus-group-mode)
   (let* ((topic (gnus-current-topic))
 	 (parent (gnus-topic-parent-topic topic))
 	 (grandparent (gnus-topic-parent-topic parent)))
@@ -1574,7 +1584,7 @@ If UNINDENT, remove an indentation."
 (defun gnus-topic-list-active (&optional force)
   "List all groups that Gnus knows about in a topicsified fashion.
 If FORCE, always re-read the active file."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when force
     (gnus-get-killed-groups))
   (gnus-topic-grok-active force)
@@ -1585,7 +1595,7 @@ If FORCE, always re-read the active file."
 
 (defun gnus-topic-toggle-display-empty-topics ()
   "Show/hide topics that have no unread articles."
-  (interactive)
+  (command gnus-group-mode)
   (setq gnus-topic-display-empty-topics
 	(not gnus-topic-display-empty-topics))
   (gnus-group-list-groups)
@@ -1598,7 +1608,7 @@ If FORCE, always re-read the active file."
 (defun gnus-topic-edit-parameters (group)
   "Edit the group parameters of GROUP.
 If performed on a topic, edit the topic parameters instead."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (if group
       (gnus-group-edit-group-parameters group)
     (if (not (gnus-group-topic-p))
@@ -1642,7 +1652,7 @@ If performed on a topic, edit the topic parameters instead."
 (defun gnus-topic-sort-groups (func &optional reverse)
   "Sort the current topic according to FUNC.
 If REVERSE, reverse the sorting order."
-  (interactive (list gnus-group-sort-function current-prefix-arg))
+  (command gnus-group-mode (list gnus-group-sort-function current-prefix-arg))
   (let ((topic (assoc (gnus-current-topic) gnus-topic-alist)))
     (gnus-topic-sort-topic
      topic (gnus-make-sort-function func) reverse)
@@ -1651,43 +1661,43 @@ If REVERSE, reverse the sorting order."
 (defun gnus-topic-sort-groups-by-alphabet (&optional reverse)
   "Sort the current topic alphabetically by group name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-alphabet reverse))
 
 (defun gnus-topic-sort-groups-by-unread (&optional reverse)
   "Sort the current topic by number of unread articles.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-unread reverse))
 
 (defun gnus-topic-sort-groups-by-level (&optional reverse)
   "Sort the current topic by group level.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-level reverse))
 
 (defun gnus-topic-sort-groups-by-score (&optional reverse)
   "Sort the current topic by group score.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-score reverse))
 
 (defun gnus-topic-sort-groups-by-rank (&optional reverse)
   "Sort the current topic by group rank.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-rank reverse))
 
 (defun gnus-topic-sort-groups-by-method (&optional reverse)
   "Sort the current topic alphabetically by backend name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-method reverse))
 
 (defun gnus-topic-sort-groups-by-server (&optional reverse)
   "Sort the current topic alphabetically by server name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-topic-sort-groups 'gnus-group-sort-by-server reverse))
 
 (defun gnus-topic-sort-topics-1 (top reverse)
@@ -1704,7 +1714,8 @@ If REVERSE, sort in reverse order."
 (defun gnus-topic-sort-topics (&optional topic reverse)
   "Sort topics in TOPIC alphabetically by topic name.
 If REVERSE, reverse the sorting order."
-  (interactive
+  (command
+   gnus-group-mode
    (list (gnus-completing-read "Sort topics in"
                                (mapcar #'car gnus-topic-alist) t
                                (gnus-current-topic))
@@ -1718,7 +1729,8 @@ If REVERSE, reverse the sorting order."
 
 (defun gnus-topic-move (current to)
   "Move the CURRENT topic to TO."
-  (interactive
+  (command
+   gnus-group-mode
    (list
     (gnus-group-topic-name)
     (gnus-completing-read "Move to topic" (mapcar #'car gnus-topic-alist) t)))
