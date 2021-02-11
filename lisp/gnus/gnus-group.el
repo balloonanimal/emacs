@@ -1160,7 +1160,7 @@ The following commands are available:
 
 (defun gnus-mouse-pick-group (e)
   "Enter the group under the mouse pointer."
-  (interactive "e")
+  (command gnus-group-mode "e")
   (mouse-set-point e)
   (gnus-group-read-group nil))
 
@@ -1235,7 +1235,7 @@ If argument UNREAD is non-nil, groups with no unread articles are also
 listed.
 
 Also see the `gnus-group-use-permanent-levels' variable."
-  (interactive
+  (command gnus-group-mode
    (list (if current-prefix-arg
 	     (prefix-numeric-value current-prefix-arg)
 	   (or
@@ -1292,7 +1292,7 @@ Also see the `gnus-group-use-permanent-levels' variable."
 (defun gnus-group-list-level (level &optional all)
   "List groups on LEVEL.
 If ALL (the prefix), also list groups that have no unread articles."
-  (interactive "nList groups on level: \nP")
+  (command gnus-group-mode "nList groups on level: \nP")
   (gnus-group-list-groups level all level))
 
 (defun gnus-group-prepare-logic (group test)
@@ -1866,7 +1866,7 @@ If FIRST-TOO, the current line is also eligible as a target."
 
 (defun gnus-group-mark-group (n &optional unmark no-advance)
   "Mark the current group."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (let ((buffer-read-only nil)
 	group)
     (while (and (> n 0)
@@ -1891,13 +1891,13 @@ If FIRST-TOO, the current line is also eligible as a target."
 
 (defun gnus-group-unmark-group (n)
   "Remove the mark from the current group."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-mark-group n 'unmark)
   (gnus-group-position-point))
 
 (defun gnus-group-unmark-all-groups ()
   "Unmark all groups."
-  (interactive)
+  (command gnus-group-mode)
   (save-excursion
     (mapc #'gnus-group-remove-mark gnus-group-marked))
   (gnus-group-position-point))
@@ -1905,7 +1905,7 @@ If FIRST-TOO, the current line is also eligible as a target."
 (defun gnus-group-mark-region (unmark beg end)
   "Mark all groups between point and mark.
 If UNMARK, remove the mark instead."
-  (interactive "P\nr")
+  (command gnus-group-mode "P\nr")
   (let ((num (count-lines beg end)))
     (save-excursion
       (goto-char beg)
@@ -1914,12 +1914,12 @@ If UNMARK, remove the mark instead."
 (defun gnus-group-mark-buffer (&optional unmark)
   "Mark all groups in the buffer.
 If UNMARK, remove the mark instead."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-mark-region unmark (point-min) (point-max)))
 
 (defun gnus-group-mark-regexp (regexp)
   "Mark all groups that match some regexp."
-  (interactive "sMark (regexp): ")
+  (command gnus-group-mode "sMark (regexp): ")
   (let ((alist (cdr gnus-newsrc-alist))
 	group)
     (save-excursion
@@ -2028,7 +2028,7 @@ number of the earliest articles in the group.
 If the optional argument NO-ARTICLE is non-nil, no article will
 be auto-selected upon group entry.  If GROUP is non-nil, fetch
 that group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((no-display (eq all 0))
 	(group (or group (gnus-group-group-name)))
 	number active marked entry)
@@ -2062,7 +2062,7 @@ If ALL is a positive number, fetch this number of the latest
 articles in the group.
 If ALL is a negative number, fetch this number of the earliest
 articles in the group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (and (eobp) (not (gnus-group-group-name)))
     (forward-line -1))
   (gnus-group-read-group all t))
@@ -2081,7 +2081,7 @@ buffer.  If GROUP is nil, use current group.
 
 This might be useful if you want to toggle threading
 before entering the group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (require 'gnus-score)
   (let (gnus-visual
 	gnus-score-find-score-files-function
@@ -2092,7 +2092,7 @@ before entering the group."
 
 (defun gnus-group-visible-select-group (&optional all)
   "Select the current group without hiding any articles."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((gnus-inhibit-limiting t))
     (gnus-group-read-group all t)))
 
@@ -2101,7 +2101,7 @@ before entering the group."
 You will actually be entered into a group that's a copy of
 the current group; no changes you make while in this group will
 be permanent."
-  (interactive)
+  (command gnus-group-mode)
   (require 'gnus-score)
   (let* (gnus-visual
 	 gnus-score-find-score-files-function gnus-apply-kill-hook
@@ -2329,7 +2329,7 @@ START is the first article.  RANGE specifies how many articles
 are fetched.  The articles are downloaded via HTTP using the URL
 specified by `gnus-gmane-group-download-format'."
   ;; See <http://gmane.org/export.php> for more information.
-  (interactive
+  (command gnus-group-mode
    (list
     (gnus-group-completing-read "Gmane group")
     (read-number "Start article number: ")
@@ -2367,7 +2367,7 @@ Valid input formats include:
   ;; - The URLs should be added to `gnus-button-alist'.  Probably we should
   ;;   prompt the user to decide: "View via `browse-url' or in Gnus? "
   ;;   (`gnus-read-ephemeral-gmane-group-url')
-  (interactive
+  (command gnus-group-mode
    (list (gnus-group-completing-read "Gmane URL")))
   (let (group start range)
     (cond
@@ -2535,7 +2535,7 @@ The arguments have the same meaning as those of
 
 If PROMPT (the prefix) is a number, use the prompt specified in
 `gnus-group-jump-to-group-prompt'."
-  (interactive
+  (command gnus-group-mode
    (list (gnus-group-completing-read
           nil nil nil
           (if current-prefix-arg
@@ -2612,7 +2612,7 @@ Return nil if GROUP is not found."
 If N is negative, search backward instead.
 Returns the difference between N and the number of skips actually
 done."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-next-unread-group n t nil silent))
 
 (defun gnus-group-next-unread-group (n &optional all level silent)
@@ -2624,7 +2624,7 @@ such group can be found, the next group with a level higher than
 LEVEL.
 Returns the difference between N and the number of skips actually
 made."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (let ((backward (< n 0))
 	(n (abs n)))
     (while (and (> n 0)
@@ -2641,14 +2641,14 @@ made."
   "Go to previous N'th newsgroup.
 Returns the difference between N and the number of skips actually
 done."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-next-unread-group (- n) t))
 
 (defun gnus-group-prev-unread-group (n)
   "Go to previous N'th unread newsgroup.
 Returns the difference between N and the number of skips actually
 done."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-next-unread-group (- n)))
 
 (defun gnus-group-next-unread-group-same-level (n)
@@ -2656,7 +2656,7 @@ done."
 If N is negative, search backward instead.
 Returns the difference between N and the number of skips actually
 done."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-next-unread-group n t (gnus-group-group-level))
   (gnus-group-position-point))
 
@@ -2664,14 +2664,14 @@ done."
   "Go to next N'th unread newsgroup on the same level.
 Returns the difference between N and the number of skips actually
 done."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (gnus-group-next-unread-group (- n) t (gnus-group-group-level))
   (gnus-group-position-point))
 
 (defun gnus-group-best-unread-group (&optional exclude-group)
   "Go to the group with the highest level.
 If EXCLUDE-GROUP, do not go to that group."
-  (interactive)
+  (command gnus-group-mode)
   (goto-char (point-min))
   (let ((best 100000)
 	unread best-point)
@@ -2711,7 +2711,7 @@ If EXCLUDE-GROUP, do not go to that group."
 
 (defun gnus-group-first-unread-group ()
   "Go to the first group with unread articles."
-  (interactive)
+  (command gnus-group-mode)
   (prog1
       (let ((opoint (point))
 	    unread)
@@ -2727,13 +2727,13 @@ If EXCLUDE-GROUP, do not go to that group."
 
 (defun gnus-group-enter-server-mode ()
   "Jump to the server buffer."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-enter-server-buffer))
 
 (defun gnus-group-make-group-simple (&optional group)
   "Add a new newsgroup.
 The user will be prompted for GROUP."
-  (interactive (list (gnus-group-completing-read)))
+  (command gnus-group-mode (list (gnus-group-completing-read)))
   (gnus-group-make-group (gnus-group-real-name group)
 			 (gnus-group-server group)
 			 nil nil))
@@ -2746,7 +2746,7 @@ even if it contains non-ASCII characters).
 
 If the backend supports it, the group will also be created on the
 server."
-  (interactive
+  (command gnus-group-mode
    (list
     (gnus-read-group "Group name: ")
     (gnus-read-method "Select method for new group (use tab for completion)")))
@@ -2794,7 +2794,7 @@ server."
 
 (defun gnus-group-delete-groups (&optional arg)
   "Delete the current group.  Only meaningful with editable groups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((n (length (gnus-group-process-prefix arg))))
     (when (gnus-yes-or-no-p
 	   (if (= n 1)
@@ -2809,8 +2809,8 @@ server."
 If OLDP (the prefix), only delete articles that are \"old\",
 according to the expiry settings.  Note that this will delete old
 not-expirable articles, too."
-  (interactive (list (gnus-group-group-name)
-		     current-prefix-arg))
+  (command gnus-group-mode (list (gnus-group-group-name)
+				 current-prefix-arg))
   (let ((articles (gnus-uncompress-range (gnus-active group))))
     (when (gnus-yes-or-no-p
 	   (format "Do you really want to delete these %d articles forever? "
@@ -2829,9 +2829,9 @@ doing the deletion.
 
 Note that you also have to specify FORCE if you want the group to
 be removed from the server, even when it's empty."
-  (interactive
-   (list (gnus-group-group-name)
-	 current-prefix-arg))
+  (command gnus-group-mode
+	   (list (gnus-group-group-name)
+		 current-prefix-arg))
   (unless group
     (error "No group to delete"))
   (unless (gnus-check-backend-function 'request-delete-group group)
@@ -2856,16 +2856,16 @@ be removed from the server, even when it's empty."
   "Rename group from GROUP to NEW-NAME.
 When used interactively, GROUP is the group under point
 and NEW-NAME will be prompted for."
-  (interactive
-   (let ((group (gnus-group-group-name))
-	 method new-name)
-     (unless (gnus-check-backend-function 'request-rename-group group)
-       (error "This back end does not support renaming groups"))
-     (setq new-name (gnus-read-group
-		     "Rename group to: "
-		     (gnus-group-real-name group))
-	   method (gnus-info-method (gnus-get-info group)))
-     (list group (gnus-group-prefixed-name new-name method))))
+  (command gnus-group-mode
+	   (let ((group (gnus-group-group-name))
+		 method new-name)
+	     (unless (gnus-check-backend-function 'request-rename-group group)
+	       (error "This back end does not support renaming groups"))
+	     (setq new-name (gnus-read-group
+			     "Rename group to: "
+			     (gnus-group-real-name group))
+		   method (gnus-info-method (gnus-get-info group)))
+	     (list group (gnus-group-prefixed-name new-name method))))
 
   (unless (gnus-check-backend-function 'request-rename-group group)
     (error "This back end does not support renaming groups"))
@@ -2911,7 +2911,7 @@ and NEW-NAME will be prompted for."
 
 (defun gnus-group-edit-group (group &optional part)
   "Edit the group on the current line."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (let ((part (or part 'info))
 	info)
     (unless group
@@ -2950,12 +2950,12 @@ and NEW-NAME will be prompted for."
 
 (defun gnus-group-edit-group-method (group)
   "Edit the select method of GROUP."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (gnus-group-edit-group group 'method))
 
 (defun gnus-group-edit-group-parameters (group)
   "Edit the group parameters of GROUP."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (gnus-group-edit-group group 'params))
 
 (defun gnus-group-edit-group-done (part group form)
@@ -2992,15 +2992,16 @@ and NEW-NAME will be prompted for."
 
 (defun gnus-group-make-useful-group (group method)
   "Create one of the groups described in `gnus-useful-groups'."
-  (interactive
-   (let ((entry (assoc (gnus-completing-read "Create group"
-                                             (mapcar #'car gnus-useful-groups)
-                                             t)
-		       gnus-useful-groups)))
-     (list (cadr entry)
-	   ;; Don't use `caddr' here since macros within the `interactive'
-	   ;; form won't be expanded.
-	   (car (cddr entry)))))
+  (command gnus-group-mode
+	   (let ((entry (assoc (gnus-completing-read
+				"Create group"
+				(mapcar #'car gnus-useful-groups)
+				t)
+			       gnus-useful-groups)))
+	     (list (cadr entry)
+		   ;; Don't use `caddr' here since macros within the
+		   ;; `interactive' form won't be expanded.
+		   (car (cddr entry)))))
   (setq method (copy-tree method))
   (let (entry)
     (while (setq entry (memq (assq 'eval method) method))
@@ -3014,7 +3015,7 @@ group already exists:
 - if not given, and error is signaled,
 - if t, stay silent,
 - if anything else, just print a message."
-  (interactive)
+  (command gnus-group-mode)
   (let ((name (gnus-group-prefixed-name "gnus-help" '(nndoc "gnus-help")))
 	(file (nnheader-find-etc-directory "gnus-tut.txt" t)))
     (if (gnus-group-entry name)
@@ -3040,9 +3041,9 @@ group already exists:
   "Create a group that uses a single file as the source.
 
 If called with a prefix argument, ask for the file type."
-  (interactive
-   (list (read-file-name "File name: ")
-	 (and current-prefix-arg 'ask)))
+  (command gnus-group-mode
+	   (list (read-file-name "File name: ")
+		 (and current-prefix-arg 'ask)))
   (when (eq type 'ask)
     (let ((err "")
 	  char found)
@@ -3077,7 +3078,7 @@ If called with a prefix argument, ask for the file type."
 (defun gnus-group-make-web-group (&optional solid)
   "Create an ephemeral nnweb group.
 If SOLID (the prefix), create a solid group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (require 'nnweb)
   (let* ((group
 	  (if solid (gnus-read-group "Group name: ")
@@ -3117,7 +3118,7 @@ If SOLID (the prefix), create a solid group."
 (defun gnus-group-make-rss-group (&optional url)
   "Given a URL, discover if there is an RSS feed.
 If there is, use Gnus to create an nnrss group"
-  (interactive)
+  (command gnus-group-mode)
   (require 'nnrss)
   (if (not url)
       (setq url (read-from-minibuffer "URL to Search for RSS: ")))
@@ -3158,8 +3159,8 @@ If there is, use Gnus to create an nnrss group"
 The user will be prompted for a directory.  The contents of this
 directory will be used as a newsgroup.  The directory should contain
 mail messages or news articles in files that have numeric names."
-  (interactive
-   (list (read-directory-name "Create group from directory: ")))
+  (command gnus-group-mode
+	   (list (read-directory-name "Create group from directory: ")))
   (unless (file-exists-p dir)
     (error "No such directory"))
   (unless (file-directory-p dir)
@@ -3192,7 +3193,7 @@ prefix arg NO-PARSE means that Gnus should not parse the search
 query before passing it to the underlying search engine.  A
 non-nil SPECS arg must be an alist with `search-query-spec' and
 `search-group-spec' keys, and skips all prompting."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((name (gnus-read-group "Group name: ")))
     (with-current-buffer gnus-group-buffer
       (let* ((group-spec
@@ -3246,7 +3247,7 @@ prefix arg NO-PARSE means that Gnus should not parse the search
 query before passing it to the underlying search engine.  A
 non-nil SPECS arg must be an alist with `search-query-spec' and
 `search-group-spec' keys, and skips all prompting."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let* ((group-spec
 	  (or (cdr (assq 'search-group-spec specs))
 	      (cdr (assq 'nnir-group-spec specs))
@@ -3286,10 +3287,10 @@ non-nil SPECS arg must be an alist with `search-query-spec' and
 
 (defun gnus-group-add-to-virtual (n vgroup)
   "Add the current group to a virtual group."
-  (interactive
-   (list current-prefix-arg
-	 (gnus-group-completing-read "Add to virtual group"
-                                     nil t "nnvirtual:")))
+  (command gnus-group-mode
+	   (list current-prefix-arg
+		 (gnus-group-completing-read "Add to virtual group"
+					     nil t "nnvirtual:")))
   (unless (eq (car (gnus-find-method-for-group vgroup)) 'nnvirtual)
     (error "%s is not an nnvirtual group" vgroup))
   (gnus-close-group vgroup)
@@ -3307,7 +3308,7 @@ non-nil SPECS arg must be an alist with `search-query-spec' and
 
 (defun gnus-group-make-empty-virtual (group)
   "Create a new, fresh, empty virtual group."
-  (interactive "sCreate new, empty virtual group: ")
+  (command gnus-group-mode "sCreate new, empty virtual group: ")
   (let* ((method (list 'nnvirtual "^$"))
 	 (pgroup (gnus-group-prefixed-name group method)))
     ;; Check whether it exists already.
@@ -3321,7 +3322,7 @@ non-nil SPECS arg must be an alist with `search-query-spec' and
 
 (defun gnus-group-enter-directory (dir)
   "Enter an ephemeral nneething group."
-  (interactive "DDirectory to read: ")
+  (command gnus-group-mode "DDirectory to read: ")
   (let* ((method (list 'nneething dir '(nneething-read-only t)))
 	 (leaf (gnus-group-prefixed-name
 		(file-name-nondirectory (directory-file-name dir))
@@ -3336,7 +3337,7 @@ non-nil SPECS arg must be an alist with `search-query-spec' and
 
 (defun gnus-group-expunge-group (group)
   "Expunge deleted articles in current nnimap GROUP."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (let ((method (gnus-find-method-for-group group)))
     (if (not (gnus-check-backend-function
 	      'request-expunge-group (car method)))
@@ -3348,7 +3349,7 @@ non-nil SPECS arg must be an alist with `search-query-spec' and
 
 (defun gnus-group-nnimap-edit-acl (group)
   "Edit the Access Control List of current nnimap GROUP."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (let ((mailbox (gnus-group-real-name group)) method acl)
     (unless group
       (error "No group on current line"))
@@ -3395,7 +3396,7 @@ Editing the access control list for `%s'.
 When used interactively, the sorting function used will be
 determined by the `gnus-group-sort-function' variable.
 If REVERSE (the prefix), reverse the sorting order."
-  (interactive (list gnus-group-sort-function current-prefix-arg))
+  (command gnus-group-mode (list gnus-group-sort-function current-prefix-arg))
   (funcall gnus-group-sort-alist-function
 	   (gnus-make-sort-function func) reverse)
   (gnus-group-unmark-all-groups)
@@ -3428,56 +3429,56 @@ value is disregarded."
 (defun gnus-group-sort-groups-by-alphabet (&optional reverse)
   "Sort the group buffer alphabetically by group name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-alphabet reverse))
 
 (defun gnus-group-sort-groups-by-real-name (&optional reverse)
   "Sort the group buffer alphabetically by real (unprefixed) group name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-real-name reverse))
 
 (defun gnus-group-sort-groups-by-unread (&optional reverse)
   "Sort the group buffer by number of unread articles.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-unread reverse))
 
 (defun gnus-group-sort-groups-by-level (&optional reverse)
   "Sort the group buffer by group level.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-level reverse))
 
 (defun gnus-group-sort-groups-by-score (&optional reverse)
   "Sort the group buffer by group score.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-score reverse))
 
 (defun gnus-group-sort-groups-by-rank (&optional reverse)
   "Sort the group buffer by group rank.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-rank reverse))
 
 (defun gnus-group-sort-groups-by-method (&optional reverse)
   "Sort the group buffer alphabetically by back end name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-method reverse))
 
 (defun gnus-group-sort-groups-by-server (&optional reverse)
   "Sort the group buffer alphabetically by server name.
 If REVERSE, sort in reverse order."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-sort-groups 'gnus-group-sort-by-server reverse))
 
 ;;; Selected group sorting.
 
 (defun gnus-group-sort-selected-groups (n func &optional reverse)
   "Sort the process/prefixed groups."
-  (interactive (list current-prefix-arg gnus-group-sort-function))
+  (command gnus-group-mode (list current-prefix-arg gnus-group-sort-function))
   (let ((groups (gnus-group-process-prefix n)))
     (funcall gnus-group-sort-selected-function
 	     groups (gnus-make-sort-function func) reverse)
@@ -3509,49 +3510,49 @@ If REVERSE is non-nil, reverse the sorting."
   "Sort the group buffer alphabetically by group name.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-alphabet reverse))
 
 (defun gnus-group-sort-selected-groups-by-real-name (&optional n reverse)
   "Sort the group buffer alphabetically by real group name.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-real-name reverse))
 
 (defun gnus-group-sort-selected-groups-by-unread (&optional n reverse)
   "Sort the group buffer by number of unread articles.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-unread reverse))
 
 (defun gnus-group-sort-selected-groups-by-level (&optional n reverse)
   "Sort the group buffer by group level.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-level reverse))
 
 (defun gnus-group-sort-selected-groups-by-score (&optional n reverse)
   "Sort the group buffer by group score.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-score reverse))
 
 (defun gnus-group-sort-selected-groups-by-rank (&optional n reverse)
   "Sort the group buffer by group rank.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-rank reverse))
 
 (defun gnus-group-sort-selected-groups-by-method (&optional n reverse)
   "Sort the group buffer alphabetically by back end name.
 Obeys the process/prefix convention.  If REVERSE (the symbolic prefix),
 sort in reverse order."
-  (interactive (gnus-interactive "P\ny"))
+  (command gnus-group-mode (gnus-interactive "P\ny"))
   (gnus-group-sort-selected-groups n 'gnus-group-sort-by-method reverse))
 
 ;;; Sorting predicates.
@@ -3609,7 +3610,7 @@ sort in reverse order."
 (defun gnus-group-clear-data (&optional arg)
   "Clear all marks and read ranges from the current group.
 Obeys the process/prefix convention."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when (gnus-y-or-n-p "Really clear data? ")
     (gnus-group-iterate arg
       (lambda (group)
@@ -3621,7 +3622,7 @@ Obeys the process/prefix convention."
 
 (defun gnus-group-clear-data-on-native-groups ()
   "Clear all marks and read ranges from all native groups."
-  (interactive)
+  (command gnus-group-mode)
   (when (gnus-yes-or-no-p "Really clear all data from almost all groups? ")
     (let ((alist (cdr gnus-newsrc-alist))
 	  info)
@@ -3665,7 +3666,7 @@ caught up.  If ALL is non-nil, marked articles will also be marked as
 read.  Cross references (Xref: header) of articles are ignored.
 The number of newsgroups that this function was unable to catch
 up is returned."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((groups (gnus-group-process-prefix n))
 	(ret 0)
 	group)
@@ -3704,7 +3705,7 @@ up is returned."
 (defun gnus-group-catchup-current-all (&optional n)
   "Mark all articles in current newsgroup as read.
 Cross references (Xref: header) of articles are ignored."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-catchup-current n 'all))
 
 (declare-function gnus-sequence-of-unread-articles "gnus-sum" (group))
@@ -3751,7 +3752,7 @@ or nil if no action could be taken."
 (defun gnus-group-expire-articles (&optional n)
   "Expire all expirable articles in the current newsgroup.
 Uses the process/prefix convention."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((groups (gnus-group-process-prefix n))
 	group)
     (unless groups
@@ -3797,7 +3798,7 @@ Uses the process/prefix convention."
 
 (defun gnus-group-expire-all-groups ()
   "Expire all expirable articles in all newsgroups."
-  (interactive)
+  (command gnus-group-mode)
   (save-excursion
     (gnus-message 5 "Expiring...")
     (let ((gnus-group-marked (mapcar (lambda (info) (gnus-info-group info))
@@ -3808,7 +3809,7 @@ Uses the process/prefix convention."
 
 (defun gnus-group-set-current-level (n level)
   "Set the level of the next N groups to LEVEL."
-  (interactive
+  (command gnus-group-mode
    (list
     current-prefix-arg
     (progn
@@ -3837,18 +3838,18 @@ Uses the process/prefix convention."
 
 (defun gnus-group-unsubscribe (&optional n)
   "Unsubscribe the current group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-unsubscribe-current-group n 'unsubscribe))
 
 (defun gnus-group-subscribe (&optional n)
   "Subscribe the current group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-unsubscribe-current-group n 'subscribe))
 
 (defun gnus-group-unsubscribe-current-group (&optional n do-sub)
   "Toggle subscription of the current group.
 If given numerical prefix, toggle the N next groups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (dolist (group (gnus-group-process-prefix n))
     (gnus-group-remove-mark group)
     (gnus-group-unsubscribe-group
@@ -3870,8 +3871,8 @@ If given numerical prefix, toggle the N next groups."
   "Toggle subscription to GROUP.
 Killed newsgroups are subscribed.  If SILENT, don't try to update the
 group line."
-  (interactive (list (gnus-group-completing-read
-		      nil nil (gnus-read-active-file-p))))
+  (command gnus-group-mode (list (gnus-group-completing-read
+				  nil nil (gnus-read-active-file-p))))
   (let ((newsrc (gnus-group-entry group)))
     (cond
      ((string-match "\\`[ \t]*\\'" group)
@@ -3905,7 +3906,7 @@ group line."
   "Move the current newsgroup up N places.
 If given a negative prefix, move down instead.  The difference between
 N and the number of steps taken is returned."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (unless (gnus-group-group-name)
     (error "No group on current line"))
   (gnus-group-kill-group 1)
@@ -3917,7 +3918,8 @@ N and the number of steps taken is returned."
 (defun gnus-group-kill-all-zombies (&optional dummy)
   "Kill all zombie newsgroups.
 The optional DUMMY should always be nil."
-  (interactive (list (not (gnus-yes-or-no-p "Really kill all zombies? "))))
+  (command gnus-group-mode
+	   (list (not (gnus-yes-or-no-p "Really kill all zombies? "))))
   (unless dummy
     (setq gnus-killed-list (nconc gnus-zombie-list gnus-killed-list))
     (setq gnus-zombie-list nil)
@@ -3927,7 +3929,7 @@ The optional DUMMY should always be nil."
 (defun gnus-group-kill-region (begin end)
   "Kill newsgroups in current region (excluding current point).
 The killed newsgroups can be yanked by using \\[gnus-group-yank-group]."
-  (interactive "r")
+  (command gnus-group-mode "r")
   (let ((lines
 	 ;; Count lines.
 	 (save-excursion
@@ -3949,7 +3951,7 @@ However, only groups that were alive can be yanked; already killed
 groups or zombie groups can't be yanked.
 The return value is the name of the group that was killed, or a list
 of groups killed."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((buffer-read-only nil)
 	(groups (gnus-group-process-prefix n))
 	group entry level out)
@@ -4009,7 +4011,7 @@ of groups killed."
 The numeric ARG specifies how many newsgroups are to be yanked.  The
 name of the newsgroup yanked is returned, or (if several groups are
 yanked) a list of yanked groups is returned."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (setq arg (or arg 1))
   (let (info group prev out)
     (while (>= (cl-decf arg) 0)
@@ -4034,7 +4036,7 @@ yanked) a list of yanked groups is returned."
 
 (defun gnus-group-kill-level (level)
   "Kill all groups that is on a certain LEVEL."
-  (interactive "nKill all groups on level: ")
+  (command gnus-group-mode "nKill all groups on level: ")
   (cond
    ((= level gnus-level-zombie)
     (setq gnus-killed-list
@@ -4065,7 +4067,7 @@ yanked) a list of yanked groups is returned."
   "List all newsgroups with level ARG or lower.
 Default is `gnus-level-unsubscribed', which lists all subscribed and most
 unsubscribed groups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-group-list-groups (or arg gnus-level-unsubscribed) t))
 
 ;; Redefine this to list ALL killed groups if prefix arg used.
@@ -4074,7 +4076,7 @@ unsubscribed groups."
   "List all killed newsgroups in the group buffer.
 If ARG is non-nil, list ALL killed groups known to Gnus.  This may
 entail asking the server for the groups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   ;; Find all possible killed newsgroups if arg.
   (when arg
     (gnus-get-killed-groups))
@@ -4088,7 +4090,7 @@ entail asking the server for the groups."
 
 (defun gnus-group-list-zombies ()
   "List all zombie newsgroups in the group buffer."
-  (interactive)
+  (command gnus-group-mode)
   (if (not gnus-zombie-list)
       (gnus-message 6 "No zombie groups")
     (let (gnus-group-list-mode)
@@ -4099,7 +4101,7 @@ entail asking the server for the groups."
 
 (defun gnus-group-list-active ()
   "List all groups that are available from the server(s)."
-  (interactive)
+  (command gnus-group-mode)
   ;; First we make sure that we have really read the active file.
   (unless (gnus-read-active-file-p)
     (let ((gnus-read-active-file t)
@@ -4121,7 +4123,7 @@ entail asking the server for the groups."
 
 (defun gnus-activate-all-groups (level)
   "Activate absolutely all groups."
-  (interactive (list gnus-level-unsubscribed))
+  (command gnus-group-mode (list gnus-level-unsubscribed))
   (let ((gnus-activate-level level)
 	(gnus-activate-foreign-newsgroups level))
     (gnus-group-get-new-news)))
@@ -4133,7 +4135,7 @@ re-scanning.  If ARG is non-nil and not a number, this will force
 \"hard\" re-reading of the active files from all servers.
 If ONE-LEVEL is not nil, then re-scan only the specified level,
 otherwise all levels below ARG will be scanned too."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (require 'nnmail)
   (let ((gnus-inhibit-demon t)
 	;; Binding this variable will inhibit multiple fetchings
@@ -4163,7 +4165,7 @@ otherwise all levels below ARG will be scanned too."
 The difference between N and the number of newsgroup checked is returned.
 If N is negative, this group and the N-1 previous groups will be checked.
 If DONT-SCAN is non-nil, scan non-activated groups as well."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let* ((groups (gnus-group-process-prefix n))
 	 (ret (if (numberp n) (- n (length groups)) 0))
 	 (beg (unless n
@@ -4208,7 +4210,7 @@ If DONT-SCAN is non-nil, scan non-activated groups as well."
 
 (defun gnus-group-describe-group (force &optional group)
   "Display a description of the current newsgroup."
-  (interactive (list current-prefix-arg (gnus-group-group-name)))
+  (command gnus-group-mode (list current-prefix-arg (gnus-group-group-name)))
   (let* ((method (gnus-find-method-for-group group))
 	 (mname (gnus-group-prefixed-name "" method))
 	 desc)
@@ -4230,7 +4232,7 @@ If DONT-SCAN is non-nil, scan non-activated groups as well."
 ;; Suggested by Per Abrahamsen <amanda@iesd.auc.dk>.
 (defun gnus-group-describe-all-groups (&optional force)
   "Pop up a buffer with descriptions of all newsgroups."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when force
     (setq gnus-description-hashtb nil))
   (when (not (or gnus-description-hashtb
@@ -4255,7 +4257,7 @@ If DONT-SCAN is non-nil, scan non-activated groups as well."
 ;; Suggested by Daniel Quinlan <quinlan@best.com>.
 (defun gnus-group-apropos (regexp &optional search-description)
   "List all newsgroups that have names that match a regexp."
-  (interactive "sGnus apropos (regexp): ")
+  (command gnus-group-mode "sGnus apropos (regexp): ")
   (let ((prev "")
 	(obuf (current-buffer))
 	groups des)
@@ -4294,7 +4296,7 @@ If DONT-SCAN is non-nil, scan non-activated groups as well."
 
 (defun gnus-group-description-apropos (regexp)
   "List all newsgroups that have names or descriptions that match REGEXP."
-  (interactive "sGnus description apropos (regexp): ")
+  (command gnus-group-mode "sGnus description apropos (regexp): ")
   (when (not (or gnus-description-hashtb
 		 (gnus-read-all-descriptions-files)))
     (error "Couldn't request descriptions file"))
@@ -4309,7 +4311,7 @@ If ALL, also list groups with no unread articles.
 If LOWEST, don't list groups with level lower than LOWEST.
 
 This command may read the active file."
-  (interactive "P\nsList newsgroups matching: ")
+  (command gnus-group-mode "P\nsList newsgroups matching: ")
   ;; First make sure active file has been read.
   (when (and level
 	     (> (prefix-numeric-value level) gnus-level-killed))
@@ -4324,7 +4326,7 @@ This command may read the active file."
 If the prefix LEVEL is non-nil, it should be a number that says which
 level to cut off listing groups.
 If LOWEST, don't list groups with level lower than LOWEST."
-  (interactive "P\nsList newsgroups matching: ")
+  (command gnus-group-mode "P\nsList newsgroups matching: ")
   (when level
     (setq level (prefix-numeric-value level)))
   (gnus-group-list-matching (or level gnus-level-killed) regexp t lowest))
@@ -4333,12 +4335,12 @@ If LOWEST, don't list groups with level lower than LOWEST."
 (defun gnus-group-save-newsrc (&optional force)
   "Save the Gnus startup files.
 If FORCE, force saving whether it is necessary or not."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-save-newsrc-file force))
 
 (defun gnus-group-restart (&optional _arg)
   "Force Gnus to read the .newsrc file."
-  (interactive)
+  (command gnus-group-mode)
   (when (gnus-yes-or-no-p
 	 (format "Are you sure you want to restart Gnus? "))
     (gnus-save-newsrc-file)
@@ -4347,7 +4349,7 @@ If FORCE, force saving whether it is necessary or not."
 
 (defun gnus-group-read-init-file ()
   "Read the Gnus elisp init file."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-read-init-file)
   (gnus-message 5 "Read %s" gnus-init-file))
 
@@ -4355,7 +4357,7 @@ If FORCE, force saving whether it is necessary or not."
   "Check bogus newsgroups.
 If given a prefix, don't ask for confirmation before removing a bogus
 group."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (gnus-check-bogus-newsgroups (and (not silent) (not gnus-expert-user)))
   (gnus-group-list-groups))
 
@@ -4366,7 +4368,7 @@ With 1 C-u, use the `ask-server' method to query the server for new
 groups.
 With 2 C-u's, use most complete method possible to query the server
 for new groups, and subscribe the new groups as zombies."
-  (interactive "p")
+  (command gnus-group-mode "p")
   (let ((new-groups (gnus-find-new-newsgroups (or arg 1)))
 	current-group)
     (gnus-group-list-groups)
@@ -4379,7 +4381,7 @@ for new groups, and subscribe the new groups as zombies."
 (defun gnus-group-edit-global-kill (&optional article group)
   "Edit the global kill file.
 If GROUP, edit that local kill file instead."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (setq gnus-current-kill-article article)
   (gnus-kill-file-edit-file group)
   (gnus-message 6 "Editing a %s kill file (Type %s to exit)"
@@ -4388,12 +4390,12 @@ If GROUP, edit that local kill file instead."
 
 (defun gnus-group-edit-local-kill (article group)
   "Edit a local kill file."
-  (interactive (list nil (gnus-group-group-name)))
+  (command gnus-group-mode (list nil (gnus-group-group-name)))
   (gnus-group-edit-global-kill article group))
 
 (defun gnus-group-force-update ()
   "Update `.newsrc' file."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-save-newsrc-file))
 
 (defvar gnus-backlog-articles)
@@ -4402,7 +4404,7 @@ If GROUP, edit that local kill file instead."
   "Suspend the current Gnus session.
 In fact, cleanup buffers except for group mode buffer.
 The hook `gnus-suspend-gnus-hook' is called before actually suspending."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-run-hooks 'gnus-suspend-gnus-hook)
   (gnus-offer-save-summaries)
   ;; Kill Gnus buffers except for group mode buffer.
@@ -4425,14 +4427,14 @@ The hook `gnus-suspend-gnus-hook' is called before actually suspending."
 
 (defun gnus-group-clear-dribble ()
   "Clear all information from the dribble buffer."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-dribble-clear)
   (gnus-message 7 "Cleared dribble buffer"))
 
 (defun gnus-group-exit ()
   "Quit reading news after updating .newsrc.eld and .newsrc.
 The hook `gnus-exit-gnus-hook' is called before actually exiting."
-  (interactive)
+  (command gnus-group-mode)
   (when
       (or noninteractive		;For gnus-batch-kill
 	  (not gnus-interactive-exit)	;Without confirmation
@@ -4466,7 +4468,7 @@ The hook `gnus-exit-gnus-hook' is called before actually exiting."
 (defun gnus-group-quit ()
   "Quit reading news without updating .newsrc.eld or .newsrc.
 The hook `gnus-exit-gnus-hook' is called before actually exiting."
-  (interactive)
+  (command gnus-group-mode)
   (when (or noninteractive		;For gnus-batch-kill
 	    (zerop (buffer-size))
 	    (not (gnus-server-opened gnus-select-method))
@@ -4491,7 +4493,7 @@ The hook `gnus-exit-gnus-hook' is called before actually exiting."
 
 (defun gnus-group-describe-briefly ()
   "Give a one line description of the group mode commands."
-  (interactive)
+  (command gnus-group-mode)
   (gnus-message 7 "%s" (substitute-command-keys "\\<gnus-group-mode-map>\\[gnus-group-read-group]:Select  \\[gnus-group-next-unread-group]:Forward  \\[gnus-group-prev-unread-group]:Backward  \\[gnus-group-exit]:Exit  \\[gnus-info-find-node]:Run Info  \\[gnus-group-describe-briefly]:This help")))
 
 (defun gnus-group-browse-foreign-server (method)
@@ -4500,7 +4502,7 @@ If called interactively, this function will ask for a select method
  (nntp, nnspool, etc.) and a server address (e.g., nntp.some.where).
 If not, METHOD should be a list where the first element is the method
 and the second element is the address."
-  (interactive
+  (command gnus-group-mode
    (list (let ((how (gnus-completing-read
 		     "Which back end"
 		     (mapcar #'car (append gnus-valid-select-methods
@@ -4678,7 +4680,7 @@ level to cut off listing groups.
 If LOWEST, don't list groups with level lower than LOWEST.
 
 This command may read the active file."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when level
     (setq level (prefix-numeric-value level)))
   (when (or (not level) (>= level gnus-level-zombie))
@@ -4709,7 +4711,7 @@ level to cut off listing groups.
 If LOWEST, don't list groups with level lower than LOWEST.
 
 This command may read the active file."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when level
     (setq level (prefix-numeric-value level)))
   (when (or (not level) (>= level gnus-level-zombie))
@@ -4731,7 +4733,7 @@ level to cut off listing groups.
 If LOWEST, don't list groups with level lower than LOWEST.
 
 This command may read the active file."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (when level
     (setq level (prefix-numeric-value level)))
   (when (or (not level) (>= level gnus-level-zombie))
@@ -4759,7 +4761,7 @@ This command may read the active file."
 
 (defun gnus-group-list-plus (&optional _args)
   "List groups plus the current selection."
-  (interactive)
+  (command gnus-group-mode)
   (let ((gnus-group-listed-groups (gnus-group-listed-groups))
 	(gnus-group-list-mode gnus-group-list-mode) ;; Save it.
 	func)
@@ -4775,7 +4777,7 @@ This command may read the active file."
 
 (defun gnus-group-list-flush (&optional args)
   "Flush groups from the current selection."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((gnus-group-list-option 'flush))
     (gnus-group-list-plus args)))
 
@@ -4786,7 +4788,7 @@ with this command.  If you've first limited to groups with
 dormant articles with `A ?', you can then further limit with
 `A / c', which will then limit to groups with cached articles, giving
 you the groups that have both dormant articles and cached articles."
-  (interactive "P")
+  (command gnus-group-mode "P")
   (let ((gnus-group-list-option 'limit))
     (gnus-group-list-plus args)))
 
@@ -4839,7 +4841,7 @@ operation is only meaningful for back ends using one file per article
 \(e.g. nnml).
 
 Note: currently only implemented in nnml."
-  (interactive (list (gnus-group-group-name)))
+  (command gnus-group-mode (list (gnus-group-group-name)))
   (unless group
     (error "No group to compact"))
   (unless (gnus-check-backend-function 'request-compact-group group)
