@@ -2522,6 +2522,7 @@ gnus-summary-show-article-from-menu-as-charset-%s" cs))))
 		       (fset command
 			     (lambda ()
 			       (interactive)
+			       (declare (completion #'ignore))
 			       (let ((gnus-summary-show-article-charset-alist
 				      `((1 . ,cs))))
 				 (gnus-summary-show-article 1))))
@@ -12976,7 +12977,7 @@ If N is negative, move in reverse order.
 The difference between N and the actual number of articles marked is
 returned."
        name (cadr lway))
-     (interactive "p")
+     (command gnus-summary-mode "p")
      (gnus-summary-generic-mark n ,mark ',(nth 2 lway) ,(nth 3 lway))))
 
 (defun gnus-summary-generic-mark (n mark move unread)

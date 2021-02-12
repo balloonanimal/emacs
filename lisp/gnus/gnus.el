@@ -2598,12 +2598,13 @@ are always t.")
      ("gnus-uu" gnus-uu-delete-work-dir gnus-uu-unmark-thread)
      ("gnus-msg" (gnus-summary-send-map keymap)
       gnus-article-mail gnus-copy-article-buffer gnus-extended-version)
-     ("gnus-msg" :interactive t
-      gnus-group-post-news gnus-group-mail gnus-group-news
+     ("gnus-msg" :interactive (gnus-group-mode)
+      gnus-group-post-news gnus-group-mail gnus-group-news)
+     ("gnus-msg" :interactive (gnus-summary-mode)
       gnus-summary-post-news gnus-summary-news-other-window
       gnus-summary-followup gnus-summary-followup-with-original
       gnus-summary-cancel-article gnus-summary-supersede-article
-      gnus-post-news gnus-summary-reply gnus-summary-reply-with-original
+      gnus-summary-reply gnus-summary-reply-with-original
       gnus-summary-mail-forward gnus-summary-mail-other-window
       gnus-summary-resend-message gnus-summary-resend-bounced-mail
       gnus-summary-wide-reply gnus-summary-followup-to-mail
@@ -2611,6 +2612,7 @@ are always t.")
       gnus-summary-wide-reply-with-original
       gnus-summary-post-forward gnus-summary-wide-reply-with-original
       gnus-summary-post-forward)
+     ("gnus-msg" gnus-post-news)
      ("gnus-picon" :interactive t gnus-treat-from-picon)
      ("smiley" :interactive t smiley-region)
      ("gnus-win" gnus-configure-windows gnus-add-configuration)

@@ -4330,7 +4330,7 @@ If variable `gnus-use-long-file-name' is non-nil, it is
            `(defun ,(intern (format "gnus-%s" func))
                 (&optional interactive &rest args)
               ,(format "Run `%s' in the article buffer." func)
-              (interactive (list t))
+              (command (gnus-article-mode gnus-summary-mode) (list t))
               (with-current-buffer gnus-article-buffer
                 (if interactive
                     (call-interactively #',func)
