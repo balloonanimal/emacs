@@ -1961,7 +1961,9 @@ to get different commands to edit and resubmit."
            (complete-with-action action obarray string pred)))
        (lambda (sym)
          (and (commandp sym)
-              (funcall read-extended-command-predicate sym buffer)))
+              (if (get sym 'completion-predicate)
+                  (funcall (get sym 'completion-predicate) sym buffer)
+                (funcall read-extended-command-predicate sym buffer))))
        t nil 'extended-command-history))))
 
 (defun completion-major-mode-p (symbol buffer)
