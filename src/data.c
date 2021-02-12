@@ -986,7 +986,13 @@ The value, if non-nil, is a list of mode name symbols.  */)
     }
 #endif
   else if (AUTOLOADP (fun))
-    return Qnil;
+    {
+      Lisp_Object modes = Fnth (make_int (3), fun);
+      if (CONSP (modes))
+	return modes;
+      else
+	return Qnil;
+    }
   else if (CONSP (fun))
     {
       Lisp_Object funcar = XCAR (fun);

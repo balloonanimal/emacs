@@ -1900,17 +1900,17 @@ to get different commands to edit and resubmit."
 (defvar extended-command-history nil)
 (defvar execute-extended-command--last-typed nil)
 
-(defcustom read-extended-command-predicate #'command-for-mode-p
+(defcustom read-extended-command-predicate #'completion-major-mode-p
   "Predicate to use to determine which commands to include when completing."
   :version "28.1"
   :type '(choice (const :tag "Exclude commands not relevant to this mode"
-                        #'command-for-mode-p)
-                 (const :tag "All commands" #'commandp)
+                        #'completion-major-mode-p)
+                 (const :tag "All commands" (lambda (_ _) t))
                  (function :tag "Other function")))
 
 (defun read-extended-command ()
   "Read command name to invoke in `execute-extended-command'."
-  (let ((current-buffer (current-buffer)))
+  (let ((buffer (current-buffer)))
     (minibuffer-with-setup-hook
         (lambda ()
           (add-hook 'post-self-insert-hook
@@ -1960,17 +1960,24 @@ to get different commands to edit and resubmit."
 	       (category . command))
            (complete-with-action action obarray string pred)))
        (lambda (sym)
-         (with-current-buffer current-buffer
-           (funcall read-extended-command-predicate sym)))
+         (and (commandp sym)
+              (funcall read-extended-command-predicate sym buffer)))
        t nil 'extended-command-history))))
 
-(defun command-for-mode-p (symbol)
+(defun completion-major-mode-p (symbol buffer)
   "Say whether SYMBOL should be offered as a completion.
-This is true if it's a command and the command is applicable to
-the current major mode."
-  (and (commandp symbol)
-       (or (null (command-modes symbol))
-           (apply #'derived-mode-p (command-modes symbol)))))
+This is true if the command is applicable to the major mode in
+BUFFER."
+  (or (null (command-modes symbol))
+      (apply #'provided-mode-derived-p
+             (buffer-local-value 'major-mode buffer)
+             (command-modes symbol))))
+
+(defun completion-on-button-p (symbol buffer)
+  "Say whether SYMBOL should be offered as a completion.
+This is true if SYMBOL is a command that's in the local map at
+the current point in BUFFER."
+  )
 
 (defun read-extended-command--affixation (command-names)
   (with-selected-window (or (minibuffer-selected-window) (selected-window))
