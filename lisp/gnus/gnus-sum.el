@@ -2522,10 +2522,10 @@ gnus-summary-show-article-from-menu-as-charset-%s" cs))))
 		       (fset command
 			     (lambda ()
 			       (interactive)
-			       (declare (completion #'ignore))
 			       (let ((gnus-summary-show-article-charset-alist
 				      `((1 . ,cs))))
 				 (gnus-summary-show-article 1))))
+		       (put command 'completion-predicate 'ignore)
 		       `[,(symbol-name cs) ,command t]))
 		   (sort (coding-system-list) #'string<)))))
 	     ("Washing"
