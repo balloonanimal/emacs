@@ -76,16 +76,7 @@
 (autoload 'gnus-summary-limit-include-cached "gnus-cache" nil
   '(gnus-summary-mode))
 (autoload 'gnus-cache-write-active "gnus-cache")
-(autoload 'gnus-mailing-list-insinuate "gnus-ml" nil t)
-(autoload 'turn-on-gnus-mailing-list-mode "gnus-ml" nil t)
 (autoload 'gnus-pick-line-number "gnus-salt" nil t)
-(autoload 'mm-uu-dissect "mm-uu")
-(autoload 'gnus-article-outlook-deuglify-article "deuglify"
-  "Deuglify broken Outlook (Express) articles and redisplay."
-  t)
-(autoload 'gnus-article-outlook-unwrap-lines "deuglify" nil t)
-(autoload 'gnus-article-outlook-repair-attribution "deuglify" nil t)
-(autoload 'gnus-article-outlook-rearrange-citation "deuglify" nil t)
 (autoload 'nnselect-article-rsv "nnselect" nil nil)
 (autoload 'nnselect-article-group "nnselect" nil nil)
 (autoload 'gnus-nnselect-group-p "nnselect" nil nil)
