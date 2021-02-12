@@ -73,7 +73,8 @@
 (eval-when-compile
   (require 'subr-x))
 
-(autoload 'gnus-summary-limit-include-cached "gnus-cache" nil t)
+(autoload 'gnus-summary-limit-include-cached "gnus-cache" nil
+  '(gnus-summary-mode))
 (autoload 'gnus-cache-write-active "gnus-cache")
 (autoload 'gnus-mailing-list-insinuate "gnus-ml" nil t)
 (autoload 'turn-on-gnus-mailing-list-mode "gnus-ml" nil t)
@@ -3150,6 +3151,7 @@ buffer; read the Info manual for more information (`\\[gnus-info-find-node]').
 The following commands are available:
 
 \\{gnus-summary-mode-map}"
+  :interactive nil
   (let ((gnus-summary-local-variables gnus-newsgroup-variables))
     (gnus-summary-make-local-variables))
   (gnus-summary-make-local-variables)
@@ -7074,7 +7076,7 @@ buffer."
   (gnus-summary-position-point))
 
 (define-obsolete-function-alias
-    'gnus-summary-toggle-truncation #'toggle-truncate-lines "26.1")
+  'gnus-summary-toggle-truncation #'toggle-truncate-lines "26.1")
 
 (defun gnus-summary-find-for-reselect ()
   "Return the number of an article to stay on across a reselect.
