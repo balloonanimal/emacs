@@ -144,7 +144,9 @@ expression, in which case we want to handle forms differently."
                           ((or `((interactive . ,iargs) . ,_)
                                `(,_ (interactive . ,iargs) . ,_))
                            ;; List of modes or just t.
-                           (or (nthcdr 1 iargs) t)))))
+                           (if (nthcdr 1 iargs)
+                               (list 'quote (nthcdr 1 iargs))
+                             t)))))
         ;; Add the usage form at the end where describe-function-1
         ;; can recover it.
         (when (consp args) (setq doc (help-add-fundoc-usage doc args)))
@@ -210,7 +212,9 @@ expression, in which case we want to handle forms differently."
                      t)
                 (and (eq (car-safe (car body)) 'interactive)
                      ;; List of modes or just t.
-                     (or (nthcdr 1 (car body)) t)))
+                     (or (if (nthcdr 1 (car body))
+                             (list 'quote (nthcdr 1 (car body)))
+                           t))))
            ,(if macrop ''macro nil))))
 
      ;; For defclass forms, use `eieio-defclass-autoload'.
