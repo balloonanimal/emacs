@@ -116,12 +116,6 @@ serves as a flag, telling the Emacs command loop that the function can
 be called interactively.  The argument of the @code{interactive} form
 specifies how the arguments for an interactive call should be read.
 
-  Many commands are specific to certain major modes and do not make
-sense outside of that context.  These commands can be marked with
-@code{command} instead of @code{interactive}, and take an additional
-parameter that specifies the mode (or modes) the command is applicable
-for.
-
 @cindex @code{interactive-form} property
   Alternatively, an @code{interactive} form may be specified in a
 function symbol's @code{interactive-form} property.  A non-@code{nil}
