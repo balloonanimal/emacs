@@ -1976,7 +1976,9 @@ BUFFER."
              (buffer-local-value 'major-mode buffer)
              (command-modes symbol))
       ;; It's a minor mode.
-      (seq-intersection (command-modes symbol) minor-modes #'eq)))
+      (seq-intersection (command-modes symbol)
+                        (buffer-local-value 'minor-modes buffer)
+                        #'eq)))
 
 (defun completion-with-mode-p (modes buffer)
   (apply #'provided-mode-derived-p
