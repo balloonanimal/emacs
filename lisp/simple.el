@@ -1975,7 +1975,7 @@ BUFFER."
              (buffer-local-value 'major-mode buffer)
              (command-modes symbol))))
 
-(defun completion-on-button-p (symbol buffer)
+(defun completion-on-button-p (_symbol _buffer)
   "Say whether SYMBOL should be offered as a completion.
 This is true if SYMBOL is a command that's in the local map at
 the current point in BUFFER."

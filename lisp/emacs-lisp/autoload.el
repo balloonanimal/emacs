@@ -141,13 +141,10 @@ expression, in which case we want to handle forms differently."
                       ((stringp (car-safe rest)) (car rest))))
            ;; Look for an interactive spec.
            (interactive (pcase body
-                          ((or `((interactive . ,_) . ,_)
-                               `(,_ (interactive . ,_) . ,_))
-                           t)
-                          (`((command . ,modes) . ,_)
-                           (list 'quote (car modes)))
-                          (`(,_ (command . ,modes) . ,_)
-                           (list 'quote (car modes))))))
+                          ((or `((interactive . ,iargs) . ,_)
+                               `(,_ (interactive . ,iargs) . ,_))
+                           ;; List of modes or just t.
+                           (or (nthcdr 1 iargs) t)))))
         ;; Add the usage form at the end where describe-function-1
         ;; can recover it.
         (when (consp args) (setq doc (help-add-fundoc-usage doc args)))
@@ -211,8 +208,9 @@ expression, in which case we want to handle forms differently."
                                   easy-mmode-define-minor-mode
                                   define-minor-mode))
                      t)
-                (or (eq (car-safe (car body)) 'interactive)
-                    (eq (car-safe (car body)) 'command)))
+                (and (eq (car-safe (car body)) 'interactive)
+                     ;; List of modes or just t.
+                     (or (nthcdr 1 (car body)) t)))
            ,(if macrop ''macro nil))))
 
      ;; For defclass forms, use `eieio-defclass-autoload'.

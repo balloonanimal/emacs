@@ -864,7 +864,7 @@ if @var{parent} is @code{nil}.  (Again, a @code{nil} value is
 @item :interactive
 Modes are interactive commands by default.  If you specify a
 @code{nil} value, the derived mode won't be interactive and can't be
-activated with @kbd{M-x whatver-mode RET}.
+activated with @kbd{M-x whatever-mode RET}.
 
 @item :group
 If this is specified, the value should be the customization group for

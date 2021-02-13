@@ -936,11 +936,11 @@ Value, if non-nil, is a list (interactive SPEC).  */)
 	  Lisp_Object form = Fcdr (XCDR (fun));
 	  if (EQ (funcar, Qclosure))
 	    form = Fcdr (form);
-	  Lisp_Object spec = Fassq (Qcommand, form);
-	  if (!NILP (spec))
-	    return Fcons (Qinteractive, Fcdr (Fcdr (spec)));
+	  Lisp_Object spec = Fassq (Qinteractive, form);
+	  if (NILP (Fcdr (Fcdr (spec))))
+	    return spec;
 	  else
-	    return Fassq (Qinteractive, form);
+	    return list2 (Qinteractive, Fcar (Fcdr (spec)));
 	}
     }
   return Qnil;
@@ -1002,9 +1002,7 @@ The value, if non-nil, is a list of mode name symbols.  */)
 	  Lisp_Object form = Fcdr (XCDR (fun));
 	  if (EQ (funcar, Qclosure))
 	    form = Fcdr (form);
-	  Lisp_Object spec = Fassq (Qcommand, form);
-	  if (spec)
-	    return list1 (Fcar (Fcdr (spec)));
+	  return Fcdr (Fcdr (Fassq (Qinteractive, form)));
 	}
     }
   return Qnil;

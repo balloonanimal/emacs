@@ -104,25 +104,14 @@ If the string begins with `^' and `shift-select-mode' is non-nil,
  Emacs first calls the function `handle-shift-selection'.
 You may use `@', `*', and `^' together.  They are processed in the
  order that they appear, before reading any arguments.
-usage: (interactive &optional ARG-DESCRIPTOR)  */
-       attributes: const)
-  (Lisp_Object args)
-{
-  return Qnil;
-}
 
-DEFUN ("command", Fcommand, Scommand, 0, UNEVALLED, 0,
-       doc: /* Specify interactive arguments for a mode-specific command.
-This is like `interactive' (which see), except that it allows
-specifying which major mode (or modes) the command is meant for.  This
-has the effect of limiting completion in commands like `M-x' to the
-relevant commands for the current mode, and will also make `C-h m' list
-these commands.
+If MODES is present, it should be a list of mode names (symbols) that
+this command is applicable for.  The main effect of this is that
+`M-x TAB' (by default) won't list this command if the current buffer's
+mode doesn't match the list.  That is, if either the major mode isn't
+derived from them, or (when it's a minor mode) the mode isn't in effect.
 
-MODES can be either a symbol (a single mode), or a list of symbols
-(several modes).
-
-usage: (command MODES &optional ARG-DESCRIPTOR)  */
+usage: (interactive &optional ARG-DESCRIPTOR &rest MODES)  */
        attributes: const)
   (Lisp_Object args)
 {
@@ -909,7 +898,6 @@ a way to turn themselves off when a mouse command switches windows.  */);
   Vmouse_leave_buffer_hook = Qnil;
 
   defsubr (&Sinteractive);
-  defsubr (&Scommand);
   defsubr (&Scall_interactively);
   defsubr (&Sfuncall_interactively);
   defsubr (&Sprefix_numeric_value);

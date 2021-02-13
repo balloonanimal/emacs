@@ -162,7 +162,7 @@ commands by adding the @code{interactive} form to them.
 makes a Lisp function an interactively-callable command, and how to
 examine a command's @code{interactive} form.
 
-@defspec interactive arg-descriptor
+@defspec interactive &optional arg-descriptor &rest modes
 This special form declares that a function is a command, and that it
 may therefore be called interactively (via @kbd{M-x} or by entering a
 key sequence bound to it).  The argument @var{arg-descriptor} declares
@@ -183,6 +183,22 @@ forms are executed; at this time, if the @code{interactive} form
 occurs within the body, the form simply returns @code{nil} without
 even evaluating its argument.
 
+The @var{modes} list allows specifying which modes the command is
+meant to be used in.  This affects, for instance, completion in
+@kbd{M-x} (commands won't be offered as completions if they don't
+match (using @code{derived-mode-p}) the current major mode, or if the
+mode is a minor mode, whether it's switched on in the current buffer).
+This will also make @kbd{C-h m} list these commands.
+
+For instance:
+
+@lisp
+(interactive "p" dired-mode)
+@end lisp
+
+This will mark the command as applicable for modes derived from
+@code{dired-mode} only.
+
 By convention, you should put the @code{interactive} form in the
 function body, as the first top-level form.  If there is an
 @code{interactive} form in both the @code{interactive-form} symbol
@@ -190,18 +206,6 @@ property and the function body, the former takes precedence.  The
 @code{interactive-form} symbol property can be used to add an
 interactive form to an existing function, or change how its arguments
 are processed interactively, without redefining the function.
-@end defspec
-
-@defspec command modes &optional arg-descriptor
-The @code{command} special form is identical to @code{interactive} in
-its effect, but allows specifying which modes the command is meant to
-be used in.  This affects, for instance, completion in @kbd{M-x}
-(commands won't be offered as completions if they don't match (using
-@code{derived-mode-p}) the current major mode), and will make
-@kbd{C-h m} list these commands.
-
-@var{modes} can be either a single symbol (a mode name), or a list of
-symbols (several mode names).
 @end defspec
 
 There are three possibilities for the argument @var{arg-descriptor}:

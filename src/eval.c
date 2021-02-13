@@ -2072,12 +2072,9 @@ then strings and vectors are not accepted.  */)
   funcar = XCAR (fun);
   if (EQ (funcar, Qclosure))
     return (!NILP (Fassq (Qinteractive, Fcdr (Fcdr (XCDR (fun)))))
-	    || !NILP (Fassq (Qcommand, Fcdr (Fcdr (XCDR (fun))))))
-      ? Qt : if_prop;
+	    ? Qt : if_prop);
   else if (EQ (funcar, Qlambda))
-    return (!NILP (Fassq (Qinteractive, Fcdr (XCDR (fun))))
-	    || !NILP (Fassq (Qcommand, Fcdr (XCDR (fun)))))
-      ? Qt : if_prop;
+    return !NILP (Fassq (Qinteractive, Fcdr (XCDR (fun)))) ? Qt : if_prop;
   else if (EQ (funcar, Qautoload))
     return !NILP (Fcar (Fcdr (Fcdr (XCDR (fun))))) ? Qt : if_prop;
   else
@@ -4234,7 +4231,6 @@ before making `inhibit-quit' nil.  */);
   DEFSYM (Qexit, "exit");
 
   DEFSYM (Qinteractive, "interactive");
-  DEFSYM (Qcommand, "command");
   DEFSYM (Qcommandp, "commandp");
   DEFSYM (Qand_rest, "&rest");
   DEFSYM (Qand_optional, "&optional");
