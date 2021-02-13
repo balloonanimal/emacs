@@ -5626,7 +5626,7 @@ A value of nil means to use the current buffer's major mode, provided
 it is not marked as "special".  */);
 
   DEFVAR_PER_BUFFER ("minor-modes", &BVAR (current_buffer, minor_modes),
-		     Qsymbolp,
+		     Qnil,
 		     doc: /* Minor modes currently active in the current buffer.
 This is a list of symbols, or nil if there are no minor modes active.  */);
 
