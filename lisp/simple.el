@@ -1900,11 +1900,11 @@ to get different commands to edit and resubmit."
 (defvar extended-command-history nil)
 (defvar execute-extended-command--last-typed nil)
 
-(defcustom read-extended-command-predicate #'completion-major-mode-p
+(defcustom read-extended-command-predicate #'completion-in-mode-p
   "Predicate to use to determine which commands to include when completing."
   :version "28.1"
   :type '(choice (const :tag "Exclude commands not relevant to this mode"
-                        #'completion-major-mode-p)
+                        #'completion-in-mode-p)
                  (const :tag "All commands" (lambda (_ _) t))
                  (function :tag "Other function")))
 
@@ -1966,14 +1966,17 @@ to get different commands to edit and resubmit."
                 (funcall read-extended-command-predicate sym buffer))))
        t nil 'extended-command-history))))
 
-(defun completion-major-mode-p (symbol buffer)
+(defun completion-in-mode-p (symbol buffer)
   "Say whether SYMBOL should be offered as a completion.
 This is true if the command is applicable to the major mode in
 BUFFER."
   (or (null (command-modes symbol))
+      ;; It's derived from a major mode.
       (apply #'provided-mode-derived-p
              (buffer-local-value 'major-mode buffer)
-             (command-modes symbol))))
+             (command-modes symbol))
+      ;; It's a minor mode.
+      (seq-intersection (command-modes symbol) minor-modes #'eq)))
 
 (defun completion-with-mode-p (modes buffer)
   (apply #'provided-mode-derived-p
