@@ -1123,7 +1123,9 @@ articles in the topic and its subtopics."
 
 (define-minor-mode gnus-topic-mode
   "Minor mode for topicsifying Gnus group buffers."
-  :lighter " Topic" :keymap gnus-topic-mode-map
+  :lighter " Topic"
+  :keymap gnus-topic-mode-map
+  :interactive (gnus-group-mode)
   (if (not (derived-mode-p 'gnus-group-mode))
       (setq gnus-topic-mode nil)
     ;; Infest Gnus with topics.
