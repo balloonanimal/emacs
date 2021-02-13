@@ -335,7 +335,7 @@ lines matches `message-cite-prefix-regexp' with the same prefix.
 
 Lines matching `gnus-cite-attribution-suffix' and perhaps
 `gnus-cite-attribution-prefix' are considered attribution lines."
-  (command (gnus-article-mode gnus-summary-mode) (list 'force))
+  (interactive (list 'force) gnus-article-mode gnus-summary-mode)
   (with-current-buffer (if same-buffer (current-buffer) gnus-article-buffer)
     (gnus-cite-parse-maybe force)
     (let ((buffer-read-only nil)
@@ -459,7 +459,7 @@ frame width.
 
 Sections that are heuristically interpreted as not being
 text (i.e., computer code and the like) will not be folded."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (with-current-buffer gnus-article-buffer
     (let ((buffer-read-only nil)
 	  (inhibit-point-motion-hooks t)
@@ -529,8 +529,8 @@ text (i.e., computer code and the like) will not be folded."
 See the documentation for `gnus-article-highlight-citation'.
 If given a negative prefix, always show; if given a positive prefix,
 always hide."
-  (command (gnus-article-mode gnus-summary-mode)
-	   (append (gnus-article-hidden-arg) (list 'force)))
+  (interactive (append (gnus-article-hidden-arg) (list 'force))
+	       gnus-article-mode gnus-summary-mode)
   (gnus-set-format 'cited-opened-text-button t)
   (gnus-set-format 'cited-closed-text-button t)
   (with-current-buffer gnus-article-buffer
@@ -662,7 +662,8 @@ percent and at least `gnus-cite-hide-absolute' lines of the body is
 cited text with attributions.  When called interactively, these two
 variables are ignored.
 See also the documentation for `gnus-article-highlight-citation'."
-  (command (gnus-article-mode gnus-summary-mode) (append (gnus-article-hidden-arg) '(force)))
+  (interactive (append (gnus-article-hidden-arg) '(force))
+	       gnus-article-mode gnus-summary-mode)
   (with-current-buffer gnus-article-buffer
     (gnus-delete-wash-type 'cite)
     (unless (gnus-article-check-hidden-text 'cite arg)
@@ -690,7 +691,7 @@ See also the documentation for `gnus-article-highlight-citation'."
 
 (defun gnus-article-hide-citation-in-followups ()
   "Hide cited text in non-root articles."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (with-current-buffer gnus-article-buffer
     (let ((article (cdr gnus-article-current)))
       (unless (with-current-buffer gnus-summary-buffer

@@ -118,14 +118,14 @@ See `mail-user-agent' for more information."
   "Attach dired's marked files to a gnus message composition.
 If called non-interactively, FILES-TO-ATTACH should be a list of
 filenames."
-  (command
-   dired-mode
+  (interactive
    (list
     (delq nil
 	  (mapcar
 	   ;; don't attach directories
 	   (lambda (f) (if (file-directory-p f) nil f))
-	   (nreverse (dired-map-over-marks (dired-get-filename) nil))))))
+	   (nreverse (dired-map-over-marks (dired-get-filename) nil)))))
+   dired-mode)
   (let ((destination nil)
 	(files-str nil)
 	(bufs nil))
@@ -177,10 +177,10 @@ filenames."
 (defun gnus-dired-find-file-mailcap (&optional file-name arg)
   "In dired, visit FILE-NAME according to the mailcap file.
 If ARG is non-nil, open it in a new buffer."
-  (command dired-mode
-	   (list
-	    (file-name-sans-versions (dired-get-filename) t)
-	    current-prefix-arg))
+  (interactive (list
+		(file-name-sans-versions (dired-get-filename) t)
+		current-prefix-arg)
+	       dired-mode)
   (mailcap-parse-mailcaps)
   (if (file-exists-p file-name)
       (let (mime-type method)
@@ -216,10 +216,10 @@ optional argument PRINT-TO is nil, send the image to the printer.
 If PRINT-TO is a string, save the PostScript image in a file with
 that name.  If PRINT-TO is a number, prompt the user for the name
 of the file to save in."
-  (command dired-mode
-	   (list
-	    (file-name-sans-versions (dired-get-filename) t)
-	    (ps-print-preprint current-prefix-arg)))
+  (interactive (list
+		(file-name-sans-versions (dired-get-filename) t)
+		(ps-print-preprint current-prefix-arg))
+	       dired-mode)
   (mailcap-parse-mailcaps)
   (cond
    ((file-directory-p file-name)

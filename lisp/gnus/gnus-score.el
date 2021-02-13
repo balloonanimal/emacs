@@ -528,8 +528,8 @@ permanence, and the string to be used.  The numerical prefix will
 be used as SCORE.  A symbolic prefix of `a' (the SYMP parameter)
 says to use the `all.SCORE' file for the command instead of the
 current score file."
-  (command (gnus-article-mode gnus-summary-mode)
-	   (gnus-interactive "P\ny"))
+  (interactive (gnus-interactive "P\ny")
+	       gnus-article-mode gnus-summary-mode)
   (gnus-summary-increase-score (- (gnus-score-delta-default score)) symp))
 
 (defun gnus-score-kill-help-buffer ()
@@ -545,8 +545,8 @@ permanence, and the string to be used.  The numerical prefix will
 be used as SCORE.  A symbolic prefix of `a' (the SYMP parameter)
 says to use the `all.SCORE' file for the command instead of the
 current score file."
-  (command (gnus-article-mode gnus-summary-mode)
-	   (gnus-interactive "P\ny"))
+  (interactive (gnus-interactive "P\ny")
+	       gnus-article-mode gnus-summary-mode)
   (let* ((nscore (gnus-score-delta-default score))
 	 (prefix (if (< nscore 0) ?L ?I))
 	 (increase (> nscore 0))
@@ -932,17 +932,17 @@ MATCH is the string we are looking for.
 TYPE is the score type.
 SCORE is the score to add.
 EXTRA is the possible non-standard header."
-  (command (gnus-article-mode gnus-summary-mode)
-	   (list (gnus-completing-read "Header"
-                                       (mapcar
-                                        #'car
-                                        (seq-filter
-                                         (lambda (x) (fboundp (nth 2 x)))
-                                         gnus-header-index))
-                                       t)
-		 (read-string "Match: ")
-		 (if (y-or-n-p "Use regexp match? ") 'r 's)
-		 (string-to-number (read-string "Score: "))))
+  (interactive (list (gnus-completing-read "Header"
+					   (mapcar
+                                            #'car
+                                            (seq-filter
+                                             (lambda (x) (fboundp (nth 2 x)))
+                                             gnus-header-index))
+					   t)
+		     (read-string "Match: ")
+		     (if (y-or-n-p "Use regexp match? ") 'r 's)
+		     (string-to-number (read-string "Score: ")))
+	       gnus-article-mode gnus-summary-mode)
   (save-excursion
     (unless (and (stringp match) (> (length match) 0))
       (error "No match"))
@@ -975,10 +975,10 @@ EXTRA is the possible non-standard header."
 
 (defun gnus-score-set-mark-below (score)
   "Automatically mark articles with score below SCORE as read."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list (or (and current-prefix-arg (prefix-numeric-value current-prefix-arg))
-	     (string-to-number (read-string "Mark below: ")))))
+	     (string-to-number (read-string "Mark below: "))))
+   gnus-article-mode gnus-summary-mode)
   (setq score (or score gnus-summary-default-score 0))
   (gnus-score-set 'mark (list score))
   (gnus-score-set 'touched '(t))
@@ -1010,17 +1010,17 @@ EXTRA is the possible non-standard header."
 
 (defun gnus-score-set-expunge-below (score)
   "Automatically expunge articles with score below SCORE."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list (or (and current-prefix-arg (prefix-numeric-value current-prefix-arg))
-	     (string-to-number (read-string "Set expunge below: ")))))
+	     (string-to-number (read-string "Set expunge below: "))))
+   gnus-article-mode gnus-summary-mode)
   (setq score (or score gnus-summary-default-score 0))
   (gnus-score-set 'expunge (list score))
   (gnus-score-set 'touched '(t)))
 
 (defun gnus-score-followup-article (&optional score)
   "Add SCORE to all followups to the article in the current buffer."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (setq score (gnus-score-delta-default score))
   (when (gnus-buffer-live-p gnus-summary-buffer)
     (save-excursion
@@ -1035,7 +1035,7 @@ EXTRA is the possible non-standard header."
 
 (defun gnus-score-followup-thread (&optional score)
   "Add SCORE to all later articles in the thread the current buffer is part of."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (setq score (gnus-score-delta-default score))
   (when (gnus-buffer-live-p gnus-summary-buffer)
     (save-excursion
@@ -1069,13 +1069,13 @@ EXTRA is the possible non-standard header."
 
 (defun gnus-summary-raise-score (n)
   "Raise the score of the current article by N."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (gnus-summary-set-score (+ (gnus-summary-article-score)
 			     (or n gnus-score-interactive-default-score ))))
 
 (defun gnus-summary-set-score (n)
   "Set the score of the current article to N."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (save-excursion
     (gnus-summary-show-thread)
     (let ((buffer-read-only nil))
@@ -1094,7 +1094,7 @@ EXTRA is the possible non-standard header."
 (defun gnus-summary-current-score (arg)
   "Return the score of the current article.
   With prefix ARG, return the total score of the current (sub)thread."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (message "%s" (if arg
 		    (gnus-thread-total-score
 		     (gnus-id-to-thread
@@ -1103,17 +1103,17 @@ EXTRA is the possible non-standard header."
 
 (defun gnus-score-change-score-file (file)
   "Change current score alist."
-  (command
-   (gnus-article-mode gnus-summary-mode)
-   (list (read-file-name "Change to score file: " gnus-kill-files-directory)))
+  (interactive
+   (list (read-file-name "Change to score file: " gnus-kill-files-directory))
+   gnus-article-mode gnus-summary-mode)
   (gnus-score-load-file file)
   (gnus-set-mode-line 'summary))
 
 (defvar gnus-score-edit-exit-function)
 (defun gnus-score-edit-current-scores (file)
   "Edit the current score alist."
-  (command (gnus-article-mode gnus-summary-mode)
-	   (list gnus-current-score-file))
+  (interactive (list gnus-current-score-file)
+	       gnus-article-mode gnus-summary-mode)
   (if (not gnus-current-score-file)
       (error "No current score file")
     (let ((winconf (current-window-configuration)))
@@ -2503,7 +2503,7 @@ score in `gnus-newsgroup-scored' by SCORE."
 
 (defun gnus-score-find-trace ()
   "Find all score rules that applies to the current article."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (let ((old-scored gnus-newsgroup-scored))
     (let ((gnus-newsgroup-headers
 	   (list (gnus-summary-article-header)))
@@ -2618,7 +2618,7 @@ the score file and its full name, including the directory.")
 
 (defun gnus-summary-rescore ()
   "Redo the entire scoring process in the current summary."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (gnus-score-save)
   (setq gnus-score-cache nil)
   (setq gnus-newsgroup-scored nil)
@@ -2649,7 +2649,7 @@ the score file and its full name, including the directory.")
 
 (defun gnus-summary-raise-same-subject-and-select (score)
   "Raise articles which has the same subject with SCORE and select the next."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (let ((subject (gnus-summary-article-subject)))
     (gnus-summary-raise-score score)
     (while (gnus-summary-find-subject subject)
@@ -2658,7 +2658,7 @@ the score file and its full name, including the directory.")
 
 (defun gnus-summary-raise-same-subject (score)
   "Raise articles which has the same subject with SCORE."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (let ((subject (gnus-summary-article-subject)))
     (gnus-summary-raise-score score)
     (while (gnus-summary-find-subject subject)
@@ -2671,7 +2671,7 @@ the score file and its full name, including the directory.")
 
 (defun gnus-summary-raise-thread (&optional score)
   "Raise the score of the articles in the current thread with SCORE."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (setq score (gnus-score-delta-default score))
   (let (e)
     (save-excursion
@@ -2690,17 +2690,17 @@ the score file and its full name, including the directory.")
 
 (defun gnus-summary-lower-same-subject-and-select (score)
   "Raise articles which has the same subject with SCORE and select the next."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (gnus-summary-raise-same-subject-and-select (- score)))
 
 (defun gnus-summary-lower-same-subject (score)
   "Raise articles which has the same subject with SCORE."
-  (command (gnus-article-mode gnus-summary-mode) "p")
+  (interactive "p" gnus-article-mode gnus-summary-mode)
   (gnus-summary-raise-same-subject (- score)))
 
 (defun gnus-summary-lower-thread (&optional score)
   "Lower score of articles in the current thread with SCORE."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-summary-raise-thread (- (gnus-score-delta-default score))))
 
 ;;; Finding score files.

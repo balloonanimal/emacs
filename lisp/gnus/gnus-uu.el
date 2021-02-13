@@ -355,58 +355,58 @@ didn't work, and overwrite existing files.  Otherwise, ask each time."
 
 (defun gnus-uu-decode-uu (&optional n)
   "Uudecodes the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-uustrip-article n))
 
 (defun gnus-uu-decode-uu-and-save (n dir)
   "Decodes and saves the resulting file."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (file-name-as-directory
 	  (read-directory-name "Uudecode and save in dir: "
-			  gnus-uu-default-dir
-			  gnus-uu-default-dir t))))
+			       gnus-uu-default-dir
+			       gnus-uu-default-dir t)))
+   gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-uustrip-article n dir nil nil t))
 
 (defun gnus-uu-decode-unshar (&optional n)
   "Unshars the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-unshar-article n nil nil 'scan t))
 
 (defun gnus-uu-decode-unshar-and-save (n dir)
   "Unshars and saves the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (file-name-as-directory
 	  (read-directory-name "Unshar and save in dir: "
-			  gnus-uu-default-dir
-			  gnus-uu-default-dir t))))
+			       gnus-uu-default-dir
+			       gnus-uu-default-dir t)))
+   gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-unshar-article n dir nil 'scan t))
 
 (defun gnus-uu-decode-save (n file)
   "Saves the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (if gnus-uu-save-separate-articles
 	     (read-directory-name
 	      "Save articles in dir: " gnus-uu-default-dir gnus-uu-default-dir)
 	   (read-file-name
-	    "Save article in file: " gnus-uu-default-dir gnus-uu-default-dir))))
+	    "Save article in file: " gnus-uu-default-dir gnus-uu-default-dir)))
+   gnus-article-mode gnus-summary-mode)
   (setq gnus-uu-saved-article-name file)
   (gnus-uu-decode-with-method #'gnus-uu-save-article n nil t))
 
 (defun gnus-uu-decode-binhex (n dir)
   "Unbinhexes the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (file-name-as-directory
 	  (read-directory-name "Unbinhex and save in dir: "
-			  gnus-uu-default-dir
-			  gnus-uu-default-dir))))
+			       gnus-uu-default-dir
+			       gnus-uu-default-dir)))
+   gnus-article-mode gnus-summary-mode)
   (gnus-uu-initialize)
   (setq gnus-uu-binhex-article-name
 	(make-temp-file (expand-file-name "binhex" gnus-uu-work-dir)))
@@ -414,70 +414,70 @@ didn't work, and overwrite existing files.  Otherwise, ask each time."
 
 (defun gnus-uu-decode-yenc (n dir)
   "Decode the yEnc-encoded current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (file-name-as-directory
 	  (read-directory-name "yEnc decode and save in dir: "
-			  gnus-uu-default-dir
-			  gnus-uu-default-dir))))
+			       gnus-uu-default-dir
+			       gnus-uu-default-dir)))
+   gnus-article-mode gnus-summary-mode)
   (setq gnus-uu-yenc-article-name nil)
   (gnus-uu-decode-with-method #'gnus-uu-yenc-article n dir nil t))
 
 (defun gnus-uu-decode-uu-view (&optional n)
   "Uudecodes and views the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-uu n)))
 
 (defun gnus-uu-decode-uu-and-save-view (n dir)
   "Decodes, views and saves the resulting file."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (read-file-name "Uudecode, view and save in dir: "
 			 gnus-uu-default-dir
-			 gnus-uu-default-dir t)))
+			 gnus-uu-default-dir t))
+   gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-uu-and-save n dir)))
 
 (defun gnus-uu-decode-unshar-view (&optional n)
   "Unshars and views the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-unshar n)))
 
 (defun gnus-uu-decode-unshar-and-save-view (n dir)
   "Unshars and saves the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (read-file-name "Unshar, view and save in dir: "
 			 gnus-uu-default-dir
-			 gnus-uu-default-dir t)))
+			 gnus-uu-default-dir t))
+   gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-unshar-and-save n dir)))
 
 (defun gnus-uu-decode-save-view (n file)
   "Saves and views the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (if gnus-uu-save-separate-articles
 	     (read-directory-name "Save articles in dir: "
 				  gnus-uu-default-dir gnus-uu-default-dir)
 	   (read-file-name "Save articles in file: "
-			   gnus-uu-default-dir gnus-uu-default-dir))))
+			   gnus-uu-default-dir gnus-uu-default-dir)))
+   gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-save n file)))
 
 (defun gnus-uu-decode-binhex-view (n file)
   "Unbinhexes and views the current article."
-  (command
-   (gnus-article-mode gnus-summary-mode)
+  (interactive
    (list current-prefix-arg
 	 (read-file-name "Unbinhex, view and save in dir: "
-			 gnus-uu-default-dir gnus-uu-default-dir)))
+			 gnus-uu-default-dir gnus-uu-default-dir))
+   gnus-article-mode gnus-summary-mode)
   (gnus-uu-initialize)
   (setq gnus-uu-binhex-article-name
 	(make-temp-file (expand-file-name "binhex" gnus-uu-work-dir)))
@@ -489,7 +489,7 @@ didn't work, and overwrite existing files.  Otherwise, ask each time."
 
 (defun gnus-uu-digest-mail-forward (&optional n post)
   "Digests and forwards all articles in this series."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-uu-initialize)
   (let ((gnus-uu-save-in-digest t)
 	(file (make-temp-file (nnheader-concat gnus-uu-work-dir "forward")))
@@ -555,7 +555,7 @@ didn't work, and overwrite existing files.  Otherwise, ask each time."
 
 (defun gnus-uu-digest-post-forward (&optional n)
   "Digest and forward to a newsgroup."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-uu-digest-mail-forward n t))
 
 ;; Process marking.
@@ -585,7 +585,7 @@ didn't work, and overwrite existing files.  Otherwise, ask each time."
   "Set the process mark on articles whose subjects match REGEXP.
 When called interactively, prompt for REGEXP.
 Optional UNMARK non-nil means unmark instead of mark."
-  (command (gnus-article-mode gnus-summary-mode) "sMark (regexp): \nP")
+  (interactive "sMark (regexp): \nP" gnus-article-mode gnus-summary-mode)
   (save-excursion
     (let* ((articles (gnus-uu-find-articles-matching regexp))
 	   (new-marked (gnus-new-processable unmark articles)))
@@ -599,12 +599,12 @@ Optional UNMARK non-nil means unmark instead of mark."
 (defun gnus-uu-unmark-by-regexp (regexp)
   "Remove the process mark from articles whose subjects match REGEXP.
 When called interactively, prompt for REGEXP."
-  (command (gnus-article-mode gnus-summary-mode) "sUnmark (regexp): ")
+  (interactive "sUnmark (regexp): " gnus-article-mode gnus-summary-mode)
   (gnus-uu-mark-by-regexp regexp t))
 
 (defun gnus-uu-mark-series (&optional silent)
   "Mark the current series with the process mark."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (let* ((articles (gnus-uu-find-articles-matching))
 	 (l (length articles)))
     (while articles
@@ -617,7 +617,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-mark-region (beg end &optional unmark)
   "Set the process mark on all articles between point and mark."
-  (command (gnus-article-mode gnus-summary-mode) "r")
+  (interactive "r" gnus-article-mode gnus-summary-mode)
   (save-excursion
     (goto-char beg)
     (while (< (point) end)
@@ -629,22 +629,22 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-unmark-region (beg end)
   "Remove the process mark from all articles between point and mark."
-  (command (gnus-article-mode gnus-summary-mode) "r")
+  (interactive "r" gnus-article-mode gnus-summary-mode)
   (gnus-uu-mark-region beg end t))
 
 (defun gnus-uu-mark-buffer ()
   "Set the process mark on all articles in the buffer."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (gnus-uu-mark-region (point-min) (point-max)))
 
 (defun gnus-uu-unmark-buffer ()
   "Remove the process mark on all articles in the buffer."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (gnus-uu-mark-region (point-min) (point-max) t))
 
 (defun gnus-uu-mark-thread ()
   "Marks all articles downwards in this thread."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (gnus-save-hidden-threads
     (let ((level (gnus-summary-thread-level)))
       (while (and (gnus-summary-set-process-mark (gnus-summary-article-number))
@@ -655,7 +655,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-unmark-thread ()
   "Unmarks all articles downwards in this thread."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (let ((level (gnus-summary-thread-level)))
     (while (and (gnus-summary-remove-process-mark
 		 (gnus-summary-article-number))
@@ -665,7 +665,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-invert-processable ()
   "Invert the list of process-marked articles."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (let ((data gnus-newsgroup-data)
 	number)
     (save-excursion
@@ -678,7 +678,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-mark-over (&optional score)
   "Mark all articles with a score over SCORE (the prefix)."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (let ((score (or score gnus-summary-default-score 0))
 	(data gnus-newsgroup-data))
     (save-excursion
@@ -693,7 +693,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-mark-sparse ()
   "Mark all series that have some articles marked."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (let ((marked (nreverse gnus-newsgroup-processable))
 	subject articles total headers)
     (unless marked
@@ -717,7 +717,7 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-mark-all ()
   "Mark all articles in \"series\" order."
-  (command (gnus-article-mode gnus-summary-mode))
+  (interactive nil gnus-article-mode gnus-summary-mode)
   (setq gnus-newsgroup-processable nil)
   (save-excursion
     (let ((data gnus-newsgroup-data)
@@ -737,33 +737,33 @@ When called interactively, prompt for REGEXP."
 
 (defun gnus-uu-decode-postscript (&optional n)
   "Gets PostScript of the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-decode-postscript-article n))
 
 (defun gnus-uu-decode-postscript-view (&optional n)
   "Gets and views the current article."
-  (command (gnus-article-mode gnus-summary-mode) "P")
+  (interactive "P" gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-postscript n)))
 
 (defun gnus-uu-decode-postscript-and-save (n dir)
   "Extracts PostScript and saves the current article."
-  (command (gnus-article-mode gnus-summary-mode)
-   (list current-prefix-arg
-	 (file-name-as-directory
-	  (read-directory-name "Save in dir: "
-			  gnus-uu-default-dir
-			  gnus-uu-default-dir t))))
+  (interactive (list current-prefix-arg
+		     (file-name-as-directory
+		      (read-directory-name "Save in dir: "
+					   gnus-uu-default-dir
+					   gnus-uu-default-dir t)))
+	       gnus-article-mode gnus-summary-mode)
   (gnus-uu-decode-with-method #'gnus-uu-decode-postscript-article
 			      n dir nil nil t))
 
 (defun gnus-uu-decode-postscript-and-save-view (n dir)
   "Decodes, views and saves the resulting file."
-  (command (gnus-article-mode gnus-summary-mode)
-   (list current-prefix-arg
-	 (read-file-name "Where do you want to save the file(s)? "
-			 gnus-uu-default-dir
-			 gnus-uu-default-dir t)))
+  (interactive (list current-prefix-arg
+		     (read-file-name "Where do you want to save the file(s)? "
+				     gnus-uu-default-dir
+				     gnus-uu-default-dir t))
+	       gnus-article-mode gnus-summary-mode)
   (let ((gnus-view-pseudos (or gnus-view-pseudos 'automatic)))
     (gnus-uu-decode-postscript-and-save n dir)))
 

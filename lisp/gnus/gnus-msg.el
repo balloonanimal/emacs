@@ -657,7 +657,7 @@ network.  The corresponding back end must have a `request-post' method."
 If ARG, post to group under point.  If ARG is 1, prompt for group name.
 Depending on the selected group, the message might be either a mail or
 a news."
-  (command gnus-group-mode "P")
+  (interactive "P" gnus-group-mode)
   ;; Bind this variable here to make message mode hooks work ok.
   (let ((gnus-newsgroup-name
 	 (if arg
@@ -676,7 +676,7 @@ a news."
 Use the posting of the current group by default.
 If ARG, don't do that.  If ARG is 1, prompt for group name to find the
 posting style."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   ;; We can't `let' gnus-newsgroup-name here, since that leads
   ;; to local variables leaking.
   (let* (;;(group gnus-newsgroup-name)
@@ -701,7 +701,7 @@ If ARG, don't do that.  If ARG is 1, prompt for group name to post to.
 This function prepares a news even when using mail groups.  This is useful
 for posting messages to mail groups without actually sending them over the
 network.  The corresponding back end must have a `request-post' method."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   ;; We can't `let' gnus-newsgroup-name here, since that leads
   ;; to local variables leaking.
   (let* (;;(group gnus-newsgroup-name)
@@ -730,7 +730,7 @@ network.  The corresponding back end must have a `request-post' method."
 If ARG, don't do that.  If ARG is 1, prompt for a group name to post to.
 Depending on the selected group, the message might be either a mail or
 a news."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   ;; Bind this variable here to make message mode hooks work ok.
   (let ((gnus-newsgroup-name
 	 (if arg
@@ -750,9 +750,9 @@ If prefix argument YANK is non-nil, the original article is yanked
 automatically.
 YANK is a list of elements, where the car of each element is the
 article number, and the cdr is the string to be yanked."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   (when yank
     (gnus-summary-goto-subject
      (if (listp (car yank))
@@ -772,19 +772,19 @@ article number, and the cdr is the string to be yanked."
   "Compose a followup to an article and include the original article.
 The text in the region will be yanked.  If the region isn't
 active, the entire article will be yanked."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-followup (gnus-summary-work-articles n) force-news))
 
 (defun gnus-summary-followup-to-mail (&optional arg)
   "Followup to the current mail message via news."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   (gnus-summary-followup arg t))
 
 (defun gnus-summary-followup-to-mail-with-original (&optional arg)
   "Followup to the current mail message via news."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-followup (gnus-summary-work-articles arg) t))
 
 (defun gnus-inews-yank-articles (articles)
@@ -819,7 +819,7 @@ active, the entire article will be yanked."
 Uses the process-prefix convention.  If given the symbolic
 prefix `a', cancel using the standard posting method; if not
 post using the current select method."
-  (command gnus-summary-mode (gnus-interactive "P\ny"))
+  (interactive (gnus-interactive "P\ny") gnus-summary-mode)
   (let ((message-post-method
 	 (let ((gn gnus-newsgroup-name))
 	   (lambda (_arg) (gnus-post-method (eq symp 'a) gn))))
@@ -849,7 +849,7 @@ post using the current select method."
   "Compose an article that will supersede a previous article.
 This is done simply by taking the old article and adding a Supersedes
 header line with the old Message-ID."
-  (command gnus-summary-mode)
+  (interactive nil gnus-summary-mode)
   (let ((article (gnus-summary-article-number))
 	(mail-parse-charset gnus-newsgroup-charset))
     (gnus-setup-message 'reply-yank
@@ -1116,9 +1116,9 @@ If prefix argument YANK is non-nil, the original article is yanked
 automatically.
 If WIDE, make a wide reply.
 If VERY-WIDE, make a very wide reply."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   ;; Allow user to require confirmation before replying by mail to the
   ;; author of a news article (or mail message).
   (when (or (not (or (gnus-news-group-p gnus-newsgroup-name)
@@ -1186,14 +1186,14 @@ If VERY-WIDE, make a very wide reply."
 (defun gnus-summary-reply-with-original (n &optional wide)
   "Start composing a reply mail to the current message.
 The original article will be yanked."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-reply (gnus-summary-work-articles n) wide))
 
 (defun gnus-summary-reply-to-list-with-original (n &optional wide)
   "Start composing a reply mail to the current message.
 The reply goes only to the mailing list.
 The original article will be yanked."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (let ((message-reply-to-function
 	 (lambda nil
 	   `((To . ,(gnus-mailing-list-followup-to))))))
@@ -1205,32 +1205,32 @@ If prefix argument YANK is non-nil, the original article is yanked
 automatically.
 If WIDE, make a wide reply.
 If VERY-WIDE, make a very wide reply."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   (let ((gnus-msg-force-broken-reply-to t))
     (gnus-summary-reply yank wide very-wide)))
 
 (defun gnus-summary-reply-broken-reply-to-with-original (n &optional wide)
   "Like `gnus-summary-reply-with-original' except removing reply-to field.
 The original article will be yanked."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-reply-broken-reply-to (gnus-summary-work-articles n) wide))
 
 (defun gnus-summary-wide-reply (&optional yank)
   "Start composing a wide reply mail to the current message.
 If prefix argument YANK is non-nil, the original article is yanked
 automatically."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   (gnus-summary-reply yank t))
 
 (defun gnus-summary-wide-reply-with-original (n)
   "Start composing a wide reply mail to the current message.
 The original article(s) will be yanked.
 Uses the process/prefix convention."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-reply-with-original n t))
 
 (defun gnus-summary-very-wide-reply (&optional yank)
@@ -1243,9 +1243,9 @@ messages as the To/Cc headers.
 
 If prefix argument YANK is non-nil, the original article(s) will
 be yanked automatically."
-  (command gnus-summary-mode
-	   (list (and current-prefix-arg
-		      (gnus-summary-work-articles 1))))
+  (interactive (list (and current-prefix-arg
+			  (gnus-summary-work-articles 1)))
+	       gnus-summary-mode)
   (gnus-summary-reply yank t (gnus-summary-work-articles yank)))
 
 (defun gnus-summary-very-wide-reply-with-original (n)
@@ -1257,7 +1257,7 @@ The reply will include all From/Cc headers from the original
 messages as the To/Cc headers.
 
 The original article(s) will be yanked."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-reply
    (gnus-summary-work-articles n) t (gnus-summary-work-articles n)))
 
@@ -1273,7 +1273,7 @@ otherwise, use flipped `message-forward-as-mime'.
 If POST, post instead of mail.
 For the \"inline\" alternatives, also see the variable
 `message-forward-ignored-headers'."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (if (cdr (gnus-summary-work-articles nil))
       ;; Process marks are given.
       (gnus-uu-digest-mail-forward nil post)
@@ -1352,17 +1352,18 @@ For the \"inline\" alternatives, also see the variable
   "Resend the current article to ADDRESS.
 Uses the process/prefix convention.  If NO-SELECT, don't display
 the message before resending."
-  (command gnus-summary-mode
-	   (list (message-read-from-minibuffer
-		  "Resend message(s) to: "
-		  (when (and gnus-summary-resend-default-address
-			     (gnus-buffer-live-p gnus-original-article-buffer))
-		    ;; If some other article is currently selected, the
-		    ;; initial-contents is wrong. Whatever, it is just the
-		    ;; initial-contents.
-		    (with-current-buffer gnus-original-article-buffer
-		      (nnmail-fetch-field "to"))))
-		 current-prefix-arg))
+  (interactive
+   (list (message-read-from-minibuffer
+	  "Resend message(s) to: "
+	  (when (and gnus-summary-resend-default-address
+		     (gnus-buffer-live-p gnus-original-article-buffer))
+	    ;; If some other article is currently selected, the
+	    ;; initial-contents is wrong. Whatever, it is just the
+	    ;; initial-contents.
+	    (with-current-buffer gnus-original-article-buffer
+	      (nnmail-fetch-field "to"))))
+	 current-prefix-arg)
+   gnus-summary-mode)
   (let ((message-header-setup-hook (copy-sequence message-header-setup-hook))
 	(message-sent-hook (copy-sequence message-sent-hook))
 	;; Honor posting-style for `name' and `address' in Resent-From header.
@@ -1415,7 +1416,7 @@ the message before resending."
 A new buffer will be created to allow the user to modify body and
 contents of the message, and then, everything will happen as when
 composing a new message."
-  (command gnus-summary-mode)
+  (interactive nil gnus-summary-mode)
   (let ((mail-parse-charset gnus-newsgroup-charset))
     (gnus-setup-message 'reply-yank
       (gnus-summary-select-article t)
@@ -1443,12 +1444,12 @@ composing a new message."
 (defun gnus-summary-post-forward (&optional arg)
   "Forward the current article to a newsgroup.
 See `gnus-summary-mail-forward' for ARG."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-mail-forward arg t))
 
 (defun gnus-summary-mail-crosspost-complaint (n)
   "Send a complaint about crossposting to the current article(s)."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (dolist (article (gnus-summary-work-articles n))
     (set-buffer gnus-summary-buffer)
     (gnus-summary-goto-subject article)
@@ -1516,9 +1517,9 @@ Already submitted bugs can be found in the Emacs bug tracker:
 
 (defun gnus-summary-yank-message (buffer n)
   "Yank the current article into a composed message."
-  (command gnus-summary-mode
-	   (list (gnus-completing-read "Buffer" (message-buffers) t)
-		 current-prefix-arg))
+  (interactive (list (gnus-completing-read "Buffer" (message-buffers) t)
+		     current-prefix-arg)
+	       gnus-summary-mode)
   (gnus-summary-iterate n
     (let ((gnus-inhibit-treatment t))
       (gnus-summary-select-article))
@@ -1535,7 +1536,7 @@ contains some mail you have written which has been bounced back to
 you.
 If FETCH, try to fetch the article that this is a reply to, if indeed
 this is a reply."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (gnus-summary-select-article t)
   (let (summary-buffer parent)
     (if fetch
@@ -1970,7 +1971,7 @@ created.
 
 This command uses the process/prefix convention, so if you
 process-mark several articles, they will all be attached."
-  (command gnus-summary-mode "P")
+  (interactive "P" gnus-summary-mode)
   (let ((buffers (message-buffers))
 	destination)
     ;; Set up the destination mail composition buffer.

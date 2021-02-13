@@ -464,7 +464,7 @@ Two predefined functions are available:
 
 (defun gnus-tree-read-summary-keys (&optional arg)
   "Read a summary buffer key sequence and execute it."
-  (command gnus-tree-mode "P")
+  (interactive "P" gnus-tree-mode)
   (unless gnus-tree-inhibit
     (let ((buf (current-buffer))
 	  (gnus-tree-inhibit t)
@@ -479,7 +479,7 @@ Two predefined functions are available:
 
 (defun gnus-tree-show-summary ()
   "Reconfigure windows to show summary buffer."
-  (command gnus-tree-mode)
+  (interactive nil gnus-tree-mode)
   (if (not (gnus-buffer-live-p gnus-summary-buffer))
       (error "There is no summary buffer for this tree buffer")
     (gnus-configure-windows 'article)
@@ -487,7 +487,7 @@ Two predefined functions are available:
 
 (defun gnus-tree-select-article (article)
   "Select the article under point, if any."
-  (command gnus-tree-mode (list (gnus-tree-article-number)))
+  (interactive (list (gnus-tree-article-number)) gnus-tree-mode)
   (let ((buf (current-buffer)))
     (when article
       (with-current-buffer gnus-summary-buffer
@@ -496,7 +496,7 @@ Two predefined functions are available:
 
 (defun gnus-tree-pick-article (e)
   "Select the article under the mouse pointer."
-  (command gnus-tree-mode "e")
+  (interactive "e" gnus-tree-mode)
   (mouse-set-point e)
   (gnus-tree-select-article (gnus-tree-article-number)))
 
